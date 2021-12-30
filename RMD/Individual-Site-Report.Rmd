@@ -1,7 +1,7 @@
 ---
 output:
   word_document: 
-    reference_docx: margin_styles.docx
+    reference_docx: Supporting-Docs/margin_styles.docx
 params:
     STREAM_NAME: 
       value: "South Fork Palouse River"
@@ -42,10 +42,10 @@ site_grabber = function(site_ID, MASTER){
 
   SITE = MASTER[MASTER$Station == site_ID,]
     if(STREAM_NAME == "South Fork Palouse River"){
-      SITE$DT_round = mdy_hm(SITE$DT_round)
+      SITE$DT_round = ymd_hms(SITE$DT_round)
     }
     else{
-      SITE$DT_round = ymd_hms(SITE$DT_round)
+      SITE$DT_round = mdy_hms(SITE$DT_round)
     }
   SITE = SITE[order(SITE$DT_round),]
   return(SITE)
