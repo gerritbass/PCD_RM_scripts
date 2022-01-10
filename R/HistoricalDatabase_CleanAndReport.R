@@ -19,7 +19,7 @@ missing <- filter_at(db, vars(HUC.12.Name,
 write.csv(missing, "P:/Research_and_Monitoring/Cailin_OMalley/Historical Database/Reports/missing.csv")
 ##remove missing from database
 db2 <- anti_join(db, missing, by = NULL, copy = FALSE)
-#Comment
+
 
 
 ## Move practice type columns to new data frame. Use melt independently for these columns with a unique identifier
