@@ -23,9 +23,9 @@ db2 <- anti_join(db, missing, by = NULL, copy = FALSE)
 
 
 ## Move practice type columns to new data frame. Use melt independently for these columns with a unique identifier
-db2$UNIQUE_ID = paste(db2$Cooperator.Name.1, db2$Project.Completion.Date, sep = " ")
+db2$UNIQUE_ID = paste(db2$Cooperator.Name, db2$Completion.Date, sep = " ")
 
-NRCS_PRACS = db2[, c(33:72, 81)]
+NRCS_PRACS = db2[, c(28:66, 99)]
 
 ###Use gather instead of melt
 NRCS_MELT = gather(NRCS_PRACS, variable, value, Practice.Type.1.NRCS.Code.and.Description:Practice.Type.10.Costshare.Amount....)
