@@ -9,14 +9,14 @@ library(stringr)
 library(tidyverse)
 
 setwd("P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports")
-db <- read.csv("PCDConservationProjectDatabase_20220107.csv", header=T,na.strings=c("","NA"))
+db <- read.csv("PCDConservationProjectDatabase_20220127.csv", header=T,na.strings=c("","NA"))
 colnames(db)
 ##find rows with missing information
 missing <- filter_at(db, vars(HUC.12.Name,
                               Practice.Type.1.NRCS.Code.and.Description, 
                               Practice.Type.1.Measurement, 
                               Practice.Type.1.Unit.of.Measurement), any_vars(is.na(.)))
-write.csv(missing, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/missing.csv")
+write.csv(missing, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/missing22.csv")
 ##remove missing from database
 db2 <- anti_join(db, missing, by = NULL, copy = FALSE)
 
@@ -25,7 +25,7 @@ db2 <- anti_join(db, missing, by = NULL, copy = FALSE)
 ## Move practice type columns to new data frame. Use melt independently for these columns with a unique identifier
 db2$UNIQUE_ID = paste(db2$Cooperator.Name, db2$Completion.Date, sep = " ")
 
-NRCS_PRACS = db2[, c(27:66, 99)]
+NRCS_PRACS = db2[, c(27:66, 140)]
 
 ###Use gather instead of melt
 NRCS_MELT = gather(NRCS_PRACS, variable, value, Practice.Type.1.NRCS.Code.and.Description:Practice.Type.10.Costshare.Amount....)
@@ -103,14 +103,14 @@ NRCS_SHAPED$`Costshare Amount`<-as.numeric(gsub('[$,]', '', NRCS_SHAPED$`Costsha
 ## Merging & cleaning final dataframe
 
 FINAL = merge(db2, NRCS_SHAPED, by = "UNIQUE_ID", all.x = TRUE, all.y = TRUE)
-FINAL = FINAL[,-c(1, 28:67, 76:99)]
-FINAL = FINAL[,c(1:26, 35:38, 30:34, 27:29)]
+FINAL = FINAL[,-c(1, 28:70, 74, 76:140)]
+FINAL = FINAL[,c(1:26, 31:34, 27:30)]
 
 ## Find unique values in funding source, year, etc
 fs<-unique(FINAL$Funding.Source)
 print(fs)
 practices<-unique(FINAL$`NRCS Code and Description`)
-write.csv(practices, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/NRCS Practices.csv")
+write.csv(practices, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/NRCS_Practices22.csv")
 
 ######### Multiple funding sources, column cleaning
 FINAL$Archive = NA
@@ -137,18 +137,18 @@ FINAL$Measurement <- as.numeric(as.character(FINAL$Measurement))
 ## Final cleaning to remove rows with NAs for code descriptions
 
 FINAL = FINAL[!is.na(FINAL$`NRCS Code and Description`),] # Projects without a code are deleted here
-write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/FINAL_DB_22.csv")
-write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/piechart/FINAL_DB.csv")
-write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/RipRest_graph/FINAL_DB.csv")
-write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/TotalFunding/FINAL_DB.csv")
-write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/FundingSources/FINAL_DB.csv")
-write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/TotalCostshare/FINAL_DB.csv")
-write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/HUC12_Measurements/FINAL_DB.csv")
+write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/FINAL_DB_22_2.csv")
+write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/piechart/FINAL_DB22.csv")
+write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/RipRest_graph/FINAL_DB22.csv")
+write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/TotalFunding/FINAL_DB22.csv")
+write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/FundingSources/FINAL_DB22.csv")
+write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/TotalCostshare/FINAL_DB22.csv")
+write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/HUC12_Measurements/FINAL_DB22.csv")
 
 
 ## Make .csv without NA lats/longs
 FINAL_points <- FINAL[!is.na(FINAL$Latitude_1),] 
-write.csv(FINAL_points, "P:/Research_and_Monitoring/Cailin_OMalley/Historical Database/Reports/FINAL_points.csv")
+write.csv(FINAL_points, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/FINAL_points22.csv")
 
 
 ###### Create subsets based on practice type
