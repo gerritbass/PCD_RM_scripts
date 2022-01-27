@@ -146,6 +146,9 @@ write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Proj
 write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/HUC12_Measurements/FINAL_DB22.csv")
 
 
+## Convert lat/long from degrees to decimal
+degrees <- FINAL[str_detect(FINAL$Latitude_1, "'") == TRUE,]
+
 ## Make .csv without NA lats/longs
 FINAL_points <- FINAL[!is.na(FINAL$Latitude_1),] 
 write.csv(FINAL_points, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/FINAL_points22.csv")
