@@ -146,8 +146,40 @@ write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Proj
 write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/HUC12_Measurements/FINAL_DB22.csv")
 
 
-## Convert lat/long from degrees to decimal
-degrees <- FINAL[str_detect(FINAL$Latitude_1, "'") == TRUE,]
+## Convert lat/long from degrees to decimal using measurements package
+library(measurements)
+degrees <- FINAL[str_detect(FINAL$Latitude_1, "'") == TRUE,] %>%
+  drop_na(Latitude_1)
+
+degrees$Latitude_1 = gsub('°', ' ', degrees$Latitude_1)
+degrees$Latitude_2 = gsub('°', ' ', degrees$Latitude_2)
+degrees$Longitude_1 = gsub('°', ' ', degrees$Longitude_1)
+degrees$Longitude_2 = gsub('°', ' ', degrees$Longitude_2)
+
+# convert from decimal minutes to decimal degrees
+ewns <- ifelse( str_extract(degrees$Latitude_1,"\\(?[EWNS,.]+\\)?") %in% c("W","N"),"-","")
+dms <- str_sub(degrees$Latitude_1,1,str_length(degrees$Latitude_1)-1)
+degrees$Latitude_1 <- paste0(ewns,dms)
+ewns2 <- ifelse( str_extract(degrees$Latitude_2,"\\(?[EWNS,.]+\\)?") %in% c("W","N"),"-","")
+dms2 <- str_sub(degrees$Latitude_2,1,str_length(degrees$Latitude_2)-1)
+degrees$Latitude_2 <- paste0(ewns2,dms2)
+ewns3 <- ifelse( str_extract(degrees$Longitude_1,"\\(?[EWNS,.]+\\)?") %in% c("W","N"),"-","-")
+dms3 <- str_sub(degrees$Longitude_1,1,str_length(degrees$Longitude_1)-1)
+degrees$Longitude_1 <- paste0(ewns3,dms3)
+ewns4 <- ifelse( str_extract(degrees$Longitude_2,"\\(?[EWNS,.]+\\)?") %in% c("W","N"),"-","-")
+dms4 <- str_sub(degrees$Longitude_2,1,str_length(degrees$Longitude_2)-1)
+degrees$Longitude_2 <- paste0(ewns4,dms4)
+
+
+degrees$Latitude_1 <- measurements::conv_unit(degrees$Latitude_1, 
+                                  from = 'deg_min_sec', 
+                                  to = 'dec_deg')
+
+#convert <- function(x){
+#  z <- sapply((strsplit(x, "[°]")), as.numeric)
+#  z[1, ] + z[2, ]/60
+#}
+#convert(degrees$Latitude_1)
 
 ## Make .csv without NA lats/longs
 FINAL_points <- FINAL[!is.na(FINAL$Latitude_1),] 
