@@ -9,7 +9,7 @@ library(stringr)
 library(tidyverse)
 
 setwd("P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports")
-db <- read.csv("PCDConservationProjectDatabase_20220127.csv", header=T,na.strings=c("","NA"))
+db <- read.csv("PCDConservationProjectDatabase_20220201.csv", header=T,na.strings=c("","NA"))
 colnames(db)
 ##find rows with missing information
 missing <- filter_at(db, vars(HUC.12.Name,
@@ -25,7 +25,7 @@ db2 <- anti_join(db, missing, by = NULL, copy = FALSE)
 ## Move practice type columns to new data frame. Use melt independently for these columns with a unique identifier
 db2$UNIQUE_ID = paste(db2$Cooperator.Name, db2$Completion.Date, sep = " ")
 
-NRCS_PRACS = db2[, c(27:66, 140)]
+NRCS_PRACS = db2[, c(27:66, 99)]
 
 ###Use gather instead of melt
 NRCS_MELT = gather(NRCS_PRACS, variable, value, Practice.Type.1.NRCS.Code.and.Description:Practice.Type.10.Costshare.Amount....)
@@ -103,7 +103,7 @@ NRCS_SHAPED$`Costshare Amount`<-as.numeric(gsub('[$,]', '', NRCS_SHAPED$`Costsha
 ## Merging & cleaning final dataframe
 
 FINAL = merge(db2, NRCS_SHAPED, by = "UNIQUE_ID", all.x = TRUE, all.y = TRUE)
-FINAL = FINAL[,-c(1, 28:70, 74, 76:140)]
+FINAL = FINAL[,-c(1, 28:70, 74, 76:99)]
 FINAL = FINAL[,c(1:26, 31:34, 27:30)]
 
 ## Find unique values in funding source, year, etc
@@ -146,40 +146,12 @@ write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Proj
 write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/HUC12_Measurements/FINAL_DB22.csv")
 
 
-## Convert lat/long from degrees to decimal using measurements package
-library(measurements)
+########### 
+#Find rows recorded in degrees minutes seconds
 degrees <- FINAL[str_detect(FINAL$Latitude_1, "'") == TRUE,] %>%
-  drop_na(Latitude_1)
+  drop_na(Latitude_1) %>%
+  data.frame(lapply(degrees, as.character), stringsAsFactors=FALSE)
 
-degrees$Latitude_1 = gsub('°', ' ', degrees$Latitude_1)
-degrees$Latitude_2 = gsub('°', ' ', degrees$Latitude_2)
-degrees$Longitude_1 = gsub('°', ' ', degrees$Longitude_1)
-degrees$Longitude_2 = gsub('°', ' ', degrees$Longitude_2)
-
-# convert from decimal minutes to decimal degrees
-ewns <- ifelse( str_extract(degrees$Latitude_1,"\\(?[EWNS,.]+\\)?") %in% c("W","N"),"-","")
-dms <- str_sub(degrees$Latitude_1,1,str_length(degrees$Latitude_1)-1)
-degrees$Latitude_1 <- paste0(ewns,dms)
-ewns2 <- ifelse( str_extract(degrees$Latitude_2,"\\(?[EWNS,.]+\\)?") %in% c("W","N"),"-","")
-dms2 <- str_sub(degrees$Latitude_2,1,str_length(degrees$Latitude_2)-1)
-degrees$Latitude_2 <- paste0(ewns2,dms2)
-ewns3 <- ifelse( str_extract(degrees$Longitude_1,"\\(?[EWNS,.]+\\)?") %in% c("W","N"),"-","-")
-dms3 <- str_sub(degrees$Longitude_1,1,str_length(degrees$Longitude_1)-1)
-degrees$Longitude_1 <- paste0(ewns3,dms3)
-ewns4 <- ifelse( str_extract(degrees$Longitude_2,"\\(?[EWNS,.]+\\)?") %in% c("W","N"),"-","-")
-dms4 <- str_sub(degrees$Longitude_2,1,str_length(degrees$Longitude_2)-1)
-degrees$Longitude_2 <- paste0(ewns4,dms4)
-
-
-degrees$Latitude_1 <- measurements::conv_unit(degrees$Latitude_1, 
-                                  from = 'deg_min_sec', 
-                                  to = 'dec_deg')
-
-#convert <- function(x){
-#  z <- sapply((strsplit(x, "[°]")), as.numeric)
-#  z[1, ] + z[2, ]/60
-#}
-#convert(degrees$Latitude_1)
 
 ## Make .csv without NA lats/longs
 FINAL_points <- FINAL[!is.na(FINAL$Latitude_1),] 
