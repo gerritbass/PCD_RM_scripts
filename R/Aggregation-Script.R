@@ -32,15 +32,15 @@ for(i in 1:length(list.filenames)){
    mutate(erosion_max = ex_list %>% 
            map(., (function(x) x$value %>%  na.omit %>% max)) %>% unlist, # mean erosion rate
          CSA_area = ex_list %>% 
-           map(., (function(x) ((x %>%  na.omit)$value>5/4.46) %>% sum)) %>% unlist, #number of cells above 5t/ac 
+           map(., (function(x) (((x %>%  na.omit)$value>5/4.46)*(x %>%  na.omit)$coverage_fraction) %>% sum)) %>% unlist, #number of cells above 5t/ac 
          perc_CSA = ex_list %>%
-           map(., (function(x) ((x %>%  na.omit)$value>5/4.46) %>% sum)) %>% unlist)
+           map(., (function(x) (((x %>%  na.omit)$value>5/4.46)*(x %>%  na.omit)$coverage_fraction) %>% sum)) %>% unlist)
   
   
   farmfields2$CSA_acres = round(((farmfields2$CSA_area*900)*0.000247105), 2)
   farmfields2$Perc_CSA = round(((farmfields2$CSA_acres/farmfields$Calculated_Acres)*100), 2)
-  farmfields2 = farmfields2[,c(3,6)]
-  colnames(farmfields2) = c(paste(myname,"_Sediment_Erosion", sep=""), paste(myname, "_Percent_CSA", sep=""))
+  farmfields2 = farmfields2[,c(3,5,6)]
+  colnames(farmfields2) = c(paste(myname,"_Sediment_Erosion", sep=""), paste(myname,"_CSA_Acres", sep=""), paste(myname, "_Percent_CSA", sep=""))
   farmfields1 = cbind(farmfields1, farmfields2)
   farmfields1 = farmfields1[,-ncol(farmfields1)]
   
@@ -48,7 +48,7 @@ for(i in 1:length(list.filenames)){
 
 setwd("P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/BMP_Placement_Tool (ECY1803)/R - Farm Field Aggregation/Output")
 farmfields1 %>% 
-  st_write(dsn = '.',layer = paste('All_final2', sep=""), driver = 'ESRI Shapefile')
+  st_write(dsn = '.',layer = paste('All_Final_20220202', sep=""), driver = 'ESRI Shapefile')
 
   
   
