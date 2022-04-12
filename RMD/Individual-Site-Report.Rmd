@@ -115,7 +115,7 @@ COW0.07_FIXED = COW0.07_FIXED[,c(2:22)]
 # `r ALT_NAME` Water Quality Report - `r LAST_SAMPLE`
 </center>
 
-This report was created by the Palouse Conservation District (PCD) and contains data from water quality samples collected at `r ALT_NAME` (`r STREAM_ID`) on a monthly basis from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. The figures below provide a visual of  the measured water quality parameters over the sampling period. For more information, please contact Ryan Boylan at RyanB@PalouseCD.org, or Gerrit Bass at GerritB@PalouseCD.org. For more information about the program, you can visit PCD's Research and Monitoring [**WEBSITE**](https://www.palousecd.org/research-and-monitoring).
+This report was created by the Palouse Conservation District (PCD) and contains data from water quality samples collected at `r ALT_NAME` (`r STREAM_ID`) monthly from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. The figures below provide a visual of  the measured water quality parameters over the sampling period. For more information, please contact Ryan Boylan at RyanB@PalouseCD.org, or Gerrit Bass at GerritB@PalouseCD.org. For more information about the program, you can visit PCD's Research and Monitoring [**WEBSITE**](https://www.palousecd.org/research-and-monitoring).
 
 
 
@@ -600,7 +600,7 @@ return(table_RD)
 
 ### Water Temperature 
 
-The figure below displays water temperature ($^\circ$C) from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. The red dotted line represents the State of Washington's threshold for water temperature (17.5$^\circ$C)([**WAC 173-201A-200**](https://apps.leg.wa.gov/wac/default.aspx?cite=173-201a-200)). Temperature is measured in the field using a YSI Pro DSS.
+The figure below displays water temperature ($^\circ$C) from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. The red dotted line represents the State of Washington's threshold for water temperature (17.5$^\circ$C)([**WAC 173-201A-200**](https://apps.leg.wa.gov/wac/default.aspx?cite=173-201a-200)). Temperature is measured in the field using a YSI ProDSS.
 
 <center>
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
@@ -631,7 +631,7 @@ return(TEMP_PLOT)
 
 ### Dissolved Oxygen 
 
-The figure below displays dissolved oxygen (DO), in milligrams per Liter (mg/L) from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. The red dotted line represents the lower threshold for DO (9.5 mg/L) established by the State of Washington ([**WAC 173-201A-200**](https://apps.leg.wa.gov/wac/default.aspx?cite=173-201a-200)). DO is the amount of gaseous oxygen dissolved in the water, which benefits aquatic life. DO levels can change seasonally and even throughout the day. DO is measured in the field using a YSI Pro DSS. 
+The figure below displays dissolved oxygen (DO), in milligrams per Liter (mg/L) from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. The red dotted line represents the lower threshold for DO (9.5 mg/L) established by the State of Washington ([**WAC 173-201A-200**](https://apps.leg.wa.gov/wac/default.aspx?cite=173-201a-200)). DO is the amount of gaseous oxygen dissolved in the water, which benefits aquatic life. DO levels can change seasonally and even throughout the day. DO is measured in the field using a YSI ProDSS. 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -658,7 +658,7 @@ return(TEMP_PLOT)
 \newpage
 
 ### Specific Conductivity 
-The figure below displays specific conductivity (SC), measured in microsiemens per centimeter (uS/cm), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`.  This is a measure of electrical conductance and acts as an indicator for the concentration of salts and other ions in the water. Conductivity is measured in the field using a YSI Pro DSS.
+The figure below displays specific conductivity (SC), measured in microsiemens per centimeter (uS/cm), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`.  This is a measure of electrical conductance and acts as an indicator for the concentration of salts and other ions in the water. Conductivity is measured in the field using a YSI ProDSS.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -684,7 +684,7 @@ return(TEMP_PLOT)
 \newpage
 
 ### pH 
-The figure below displays pH levels in the stream from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. pH is a measure of acidity or alkalinity. Values range from 0 to 14 and are important indicators of health in aquatic ecosystems. Differing pH levels allow for different amounts of chemical constituents, such as heavy metals and nutrients, to be dissolved in water. pH is measured using a handheld YSI Pro DSS. The graph includes the minimum and maximum thresholds, 6.5 and 8.5 pH units respectively, for pH according to the Water Quality Standards for Surface Waters of the State of Washington ([**WAC 173-201A-200**](https://apps.leg.wa.gov/wac/default.aspx?cite=173-201a-200)).
+The figure below displays pH levels in the stream from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. pH is a measure of acidity or alkalinity. Values range from 0 to 14 and are important indicators of health in aquatic ecosystems. Differing pH levels allow for different amounts of chemical constituents, such as heavy metals and nutrients, to be dissolved in water. pH is measured using a handheld YSI ProDSS. The graph includes the minimum and maximum thresholds, 6.5 and 8.5 pH units respectively, for pH according to the Water Quality Standards for Surface Waters of the State of Washington ([**WAC 173-201A-200**](https://apps.leg.wa.gov/wac/default.aspx?cite=173-201a-200)).
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -712,7 +712,7 @@ return(TEMP_PLOT)
 \newpage
 
 ### Turbidity 
-The figure below displays a measure of water clarity, measured in nephelometric turbidity units (NTU), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. Turbidity is measured by determining how much light can pass through the water.Water clarity directly affects ecological productivity and habitat quality in aquatic environments. Excessive turbidity can be caused by physical disruption of the stream channel or through sediment inputs as a result of runoff and upland erosion.  Turbidity is measured using a handheld YSI DSS Pro.
+The figure below displays a measure of water clarity, measured in nephelometric turbidity units (NTU), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. Turbidity is measured by determining how much light can pass through the water.Water clarity directly affects ecological productivity and habitat quality in aquatic environments. Excessive turbidity can be caused by physical disruption of the stream channel or through sediment inputs as a result of runoff and upland erosion.  Turbidity is measured using a handheld YSI DSSPro.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -764,7 +764,7 @@ return(TEMP_PLOT)
 \newpage
 
 ### Fecal Coliform 
-The figure below shows Fecal Coliform (FC), measured in colonies per 100 milliliters (cols/100mL), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. The graph also included a red dotted line representing the The State of Washington's threshold for fecal coliform levels ([**WAC 173-201A-200**](https://apps.leg.wa.gov/wac/default.aspx?cite=173-201a-200)). FC is a group of coliform bacteria used to indicate fecal contamination in water bodies. FC samples are collected in-stream and analyzed at the Colfax Wastewater Treatment Plant. 
+The figure below shows Fecal Coliform (FC), measured in colonies per 100 milliliters (cols/100mL), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. The graph also included a red dotted line representing the the State of Washington's threshold for fecal coliform levels ([**WAC 173-201A-200**](https://apps.leg.wa.gov/wac/default.aspx?cite=173-201a-200)). A fecal Coliform is a group of coliform bacteria used to indicate fecal contamination in water bodies. The samples are collected in-stream and analyzed at the Colfax Wastewater Treatment Plant. 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 library(plotly)
@@ -799,7 +799,7 @@ print(TEMP_PLOT)
 \newpage
 
 ### Ammonia 
-The figure below displays ammonia concentration, measured in milligrams per liter (mg/L), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. Nitrate, nitrite, and ammonia are three common forms of nitrogen found in streams. Nitrogen is found naturally in the environment and is fairly abundant. However, excess nitrogen, from sewage systems and fertilizer application, can push aquatic ecosystems out of equilibrium and harm them. Ammonia concentrations are derived from in-stream water samples analyzed at Manchester Environmental Laboratory.
+The figure below displays ammonia concentration, measured in milligrams per liter (mg/L), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. Nitrate, nitrite, and ammonia are three common forms of nitrogen found in streams. Nitrogen is found naturally in the environment and is fairly abundant. However, excess nitrogen, from sewage systems and fertilizer applications, can push aquatic ecosystems out of equilibrium and harm them. Ammonia concentrations are derived from in-stream water samples analyzed at Manchester Environmental Laboratory.
 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
@@ -836,7 +836,7 @@ print("Data unavailable for this site")
 \newpage
 
 ### Nitrate/Nitrite 
-The figure below displays nitrate / nitrite measurements, measured in milligrams per liter (mg/L), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. As stated about nitrate, nitrite, and ammonia are all sources of Nitrogen in rivers.Nitrate & nitrite samples are collected in-stream and analyzed at Manchester Environmental Laboratory. See above for more information on the role of Nitrogen in aquatic ecosystems.
+The figure below displays nitrate/nitrite measurements, measured in milligrams per liter (mg/L), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. As stated above, nitrate, nitrite, and ammonia are all sources of Nitrogen in rivers. Nitrate & nitrite samples are collected in-stream and analyzed at Manchester Environmental Laboratory. See above for more information on the role of Nitrogen in aquatic ecosystems.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -865,7 +865,7 @@ return(TEMP_PLOT)
 \newpage
 
 ### Total Phosphorus
-The figure below displays the total phosphorus concentration , in milligrams per liter (mg/L), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. Also , denoted by a red dotted line, is the threshold concentration for phosphorus recommenced by the U.S EPA. Total phosphorus and orthophosphate are two forms of phosphorus measured in streams. Much like nitrogen, while being a vital nutrient for aquatic plant life, when present in excess, Phosphorus can be detrimental. Phosphorus is used as a chemical fertilizer in agriculture and can lead to eutrophication in streams and lakes. Total phosphorus samples are collected in-stream and analyzed at Manchester Environmental Laboratory. 
+The figure below displays the total phosphorus concentration, in milligrams per liter (mg/L), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. Also, denoted by a red dotted line, is the threshold concentration for phosphorus recommenced by the U.S EPA. Total phosphorus and orthophosphate are two forms of phosphorus measured in streams. Much like nitrogen, while being a vital nutrient for aquatic plant life, when present in excess, phosphorus can be detrimental. Phosphorus is used as a chemical fertilizer in agriculture and can lead to eutrophication in streams and lakes. Total phosphorus samples are collected in-stream and analyzed at Manchester Environmental Laboratory. 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -892,7 +892,7 @@ return(TEMP_PLOT)
 \newpage
 
 ### Orthophosphate
-The figure below displays orthophosphate concentrations,in milligrams per liter (mg/L), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. In addition to the total Phosphorus values displayed above, Orthophosphates can provide an estimate of how much phosphorus is plant available as well as help to identify pollution sources since Orthophosphates (OP) are usually derived from fertilizers or other anthropogenic sources. Orthophosphate samples are collected in-stream and analyzed at Manchester Environmental Laboratory.
+The figure below displays orthophosphate concentrations,in milligrams per liter (mg/L), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. In addition to the total Phosphorus values displayed above, Orthophosphates can provide an estimate of how much phosphorus is plant available, as well as help to identify pollution sources since orthophosphates (OP), are usually derived from fertilizers or other anthropogenic sources. Orthophosphate samples are collected in-stream and analyzed at Manchester Environmental Laboratory.
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 library(plotly)
@@ -917,7 +917,7 @@ return(TEMP_PLOT)
 \newpage
 
 ### Suspended Sediment Concentration 
-The figure below displays suspended sediment concentration (SSC), measured in milligrams per liter (mg/L), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. Sediment typically enters streams after a rainfall event through erosion and runoff. Depending on the power of the stream and amount of sediment, it can either be transported downstream or deposited in the channel. Both of these actions, in excess, can cause problems for aquatic ecosystems and downstream water users since sediment can carry pollutants and have other adverse effects on biota. SSC samples are collected in-stream and analyzed at Manchester Environmental Laboratory.
+The figure below displays suspended sediment concentration (SSC), measured in milligrams per liter (mg/L), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. Sediment typically enters streams after a rainfall event through erosion and runoff. Depending on the power of the stream and the amount of sediment, it can either be transported downstream or deposited in the channel. Both of these actions, in excess, can cause problems for aquatic ecosystems and downstream water users since sediment can carry pollutants and have other adverse effects on biota. SSC samples are collected in-stream and analyzed at Manchester Environmental Laboratory.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
