@@ -115,7 +115,7 @@ COW0.07_FIXED = COW0.07_FIXED[,c(2:22)]
 # `r ALT_NAME` Water Quality Report - `r LAST_SAMPLE`
 </center>
 
-This report was created by the Palouse Conservation District (PCD) and contains data from water quality samples collected at `r ALT_NAME` (`r STREAM_ID`) monthly from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. The figures below provide a visual of  the measured water quality parameters over the sampling period. For more information, please contact Ryan Boylan at RyanB@PalouseCD.org, or Gerrit Bass at GerritB@PalouseCD.org. For more information about the program, you can visit PCD's Research and Monitoring [**WEBSITE**](https://www.palousecd.org/research-and-monitoring).
+This report was created by the Palouse Conservation District (PCD) and contains data from water quality samples collected at `r ALT_NAME` (`r STREAM_ID`) monthly from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. The figures below provide a visual of  the measured water quality parameters over the sampling period. For more information, please contact Ryan Boylan at RyanB@PalouseCD.org, or Gerrit Bass at GerritB@PalouseCD.org. For more information about the program, A link to PCD's Research and Monitoring Website can be found [**HERE**](https://www.palousecd.org/research-and-monitoring).
 
 
 
