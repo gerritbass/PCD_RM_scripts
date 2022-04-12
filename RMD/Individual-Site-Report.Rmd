@@ -1,7 +1,7 @@
 ---
 output:
   word_document: 
-    reference_docx: Supporting-Docs/margin_styles.docx
+    reference_docx: margin_styles.docx
 params:
     STREAM_NAME: 
       value: "South Fork Palouse River"
@@ -36,16 +36,16 @@ CT_MASTER = read.csv("P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/
 
 KT_MASTER = read.csv("P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/Kamiache_and_Thorn_Creeks/Kamiache_Creek/Stream_Flow_and_Water_Quality/Master_Data/Water_Quality_Data/PCD_ML_Merge.csv")
 
-PR_MASTER = read.csv("P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/Palouse_River_Tribs/Stream_Flow_and_Water_Quality/Master_Data/Water_Quality_Data/PCD_ML_Merge.csv")
+PR_MASTER = read.csv("P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/Palouse_River_Tribs/Stream_Flow_and_Water_Quality/Master_Data/Water_Quality_Data/PCD_ML_Merge_For_EIM_20220407.csv")
 
 site_grabber = function(site_ID, MASTER){
 
   SITE = MASTER[MASTER$Station == site_ID,]
     if(STREAM_NAME == "South Fork Palouse River"){
-      SITE$DT_round = ymd_hms(SITE$DT_round)
+      SITE$DT_round = mdy_hm(SITE$DT_round)
     }
     else{
-      SITE$DT_round = mdy_hms(SITE$DT_round)
+      SITE$DT_round = ymd_hms(SITE$DT_round)
     }
   SITE = SITE[order(SITE$DT_round),]
   return(SITE)
@@ -115,7 +115,8 @@ COW0.07_FIXED = COW0.07_FIXED[,c(2:22)]
 # `r ALT_NAME` Water Quality Report - `r LAST_SAMPLE`
 </center>
 
-This is a water quality report created by the Palouse Conservation District's Research & Monitoring program. This report contains data from water quality samples collected on `r ALT_NAME` from site `r STREAM_ID`. Measurements have been collected monthly from this site since `r FIRST_SAMPLE`, with the last water sample collected on `r LAST_SAMPLE`. Several figures have been generated below to show the measurements of water quality parameters over the course of the sampling period. For more information, please contact Ryan Boylan at RyanB@PalouseCD.org, or Nick Harris at NickH@PalouseCD.org. You can also visit our website for more information about the Research & Monitoring program, https://www.palousecd.org/research-and-monitoring.
+This report was created by the Palouse Conservation District (PCD) and contains data from water quality samples collected at `r ALT_NAME` (`r STREAM_ID`) on a monthly basis from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. The figures below provide a visual of  the measured water quality parameters over the sampling period. For more information, please contact Ryan Boylan at RyanB@PalouseCD.org, or Gerrit Bass at GerritB@PalouseCD.org. For more information about the program, you can visit PCD's Research and Monitoring [**WEBSITE**](https://www.palousecd.org/research-and-monitoring).
+
 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
@@ -597,9 +598,10 @@ return(table_RD)
 ```
 \newpage
 
-### Temperature Time-Series
+### Water Temperature 
 
-The figure below shows the water temperature in Celsius over time for this site (`r FIRST_SAMPLE` - `r LAST_SAMPLE`). Temperature is measured using a handheld multiparameter sonde. The graph includes the maximum threshold of 17.5 degrees Celsius for temperature according to the Water Quality Standards for Surface Waters of the State of Washington [WAC 173-201A-200].
+The figure below displays water temperature ($^\circ$C) from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. The red dotted line represents the State of Washington's threshold for water temperature (17.5$^\circ$C)([**WAC 173-201A-200**](https://apps.leg.wa.gov/wac/default.aspx?cite=173-201a-200)). Temperature is measured in the field using a YSI Pro DSS.
+
 <center>
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -614,7 +616,8 @@ TEMP_PLOT = ggplot(TEMP)+
   geom_point(aes(x = Datetime, y = Temperature))+
   geom_line(aes(x = Datetime, y = Temperature))+
   geom_hline(yintercept = 17.5, color = "red", size = 1, linetype ="dashed", show.legend = TRUE)+
-  ylab("Water Temperature (C)")+
+  ylab("Water Temperature (degC)")+
+  xlab("")+
   theme_economist()+
   theme(legend.position = "right")
 
@@ -626,9 +629,9 @@ return(TEMP_PLOT)
 
 \newpage
 
-### Dissolved Oxygen Time-Series
+### Dissolved Oxygen 
 
-The figure below shows the dissolved oxygen in the water, measured in milligrams per liter (mg/L), over time for this site (`r FIRST_SAMPLE` - `r LAST_SAMPLE`). Gaseous oxygen is able to dissolve into stream water and is beneficial to aquatic life. Higher dissolved oxygen allows for healthier environments for fish and other organisms found in these streams. Dissolved oxygen levels change seasonally and even throughout the day. Dissolved oxygen is measured using a handheld multiparameter sonde. The graph includes the minimum threshold of 9.5 mg/L for dissolved oxygen according to the Water Quality Standards for Surface Waters of the State of Washington [WAC 173-201A-200].
+The figure below displays dissolved oxygen (DO), in milligrams per Liter (mg/L) from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. The red dotted line represents the lower threshold for DO (9.5 mg/L) established by the State of Washington ([**WAC 173-201A-200**](https://apps.leg.wa.gov/wac/default.aspx?cite=173-201a-200)). DO is the amount of gaseous oxygen dissolved in the water, which benefits aquatic life. DO levels can change seasonally and even throughout the day. DO is measured in the field using a YSI Pro DSS. 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -642,6 +645,7 @@ TEMP_PLOT = ggplot(TEMP)+
   geom_point(aes(x = Datetime, y = DO))+
   geom_line(aes(x = Datetime, y = DO))+
   ylab("Dissolved Oxygen (mg/L)")+
+  xlab("")+
   geom_hline(yintercept = 9.5, color = "red", size = 1, linetype ="dashed", show.legend = TRUE)+
   theme_economist()
 
@@ -653,8 +657,8 @@ return(TEMP_PLOT)
 
 \newpage
 
-### Conductivity Time-Series
-The figure below shows the specific conductivity in the water, measured in microsiemens per centimeter (uS/cm), over time for this site (`r FIRST_SAMPLE` - `r LAST_SAMPLE`). Electrical conductance in water occurs when there are a higher amount of molecules in the water that are either positively or negatively charged. These molecules are typically salts in natural waterways. Higher conductivity allows for an easier pathway for electrical sources to pass through and is an indicator on ion levels in water. Conductivity is measured using a handheld multiparameter sonde.
+### Specific Conductivity 
+The figure below displays specific conductivity (SC), measured in microsiemens per centimeter (uS/cm), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`.  This is a measure of electrical conductance and acts as an indicator for the concentration of salts and other ions in the water. Conductivity is measured in the field using a YSI Pro DSS.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -668,6 +672,7 @@ TEMP_PLOT = ggplot(TEMP)+
   geom_point(aes(x = Datetime, y = COND))+
   geom_line(aes(x = Datetime, y = COND))+
   ylab("Conductivity (uS/cm)")+
+  xlab("")+
   theme_economist()
 
 return(TEMP_PLOT)
@@ -678,8 +683,8 @@ return(TEMP_PLOT)
 
 \newpage
 
-### pH Time-Series
-The figure below shows the pH levels in the water over time for this site (`r FIRST_SAMPLE` - `r LAST_SAMPLE`). Measuring pH in stream water indicates water acidity or alkalinity. These measurements range from 0-14 units and are an important indicator for determining biological health of an aquatic environment. Differing pH levels allow for different amounts of chemical constituents, such as heavy metals and nutrients, to be dissolved in water. pH is measured using a handheld multiparameter sonde. The graph includes the minimum and maximum thresholds, 6.5 and 8.5 pH units respectively, for pH according to the Water Quality Standards for Surface Waters of the State of Washington [WAC 173-201A-200].
+### pH 
+The figure below displays pH levels in the stream from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. pH is a measure of acidity or alkalinity. Values range from 0 to 14 and are important indicators of health in aquatic ecosystems. Differing pH levels allow for different amounts of chemical constituents, such as heavy metals and nutrients, to be dissolved in water. pH is measured using a handheld YSI Pro DSS. The graph includes the minimum and maximum thresholds, 6.5 and 8.5 pH units respectively, for pH according to the Water Quality Standards for Surface Waters of the State of Washington ([**WAC 173-201A-200**](https://apps.leg.wa.gov/wac/default.aspx?cite=173-201a-200)).
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -695,6 +700,7 @@ TEMP_PLOT = ggplot(TEMP)+
   geom_hline(yintercept = 6.5, color = "red", size = 1, linetype ="dashed", show.legend = TRUE)+
   geom_hline(yintercept = 8.5, color = "red", size = 1, linetype ="dashed", show.legend = TRUE)+
   ylab("pH")+
+  xlab("")+
   theme_economist()
 
 return(TEMP_PLOT)
@@ -705,8 +711,8 @@ return(TEMP_PLOT)
 
 \newpage
 
-### Turbidity Time-Series
-The figure below shows the turbidity in the water, measured in nephelometric turbidity units (NTU), over time for this site (`r FIRST_SAMPLE` - `r LAST_SAMPLE`). Turbidity measures the clarity of stream water by determining how much light can pass through it. Higher turbidity causes increased light scattering, causing less light to pass through the water. Light directly affects ecological productivity and habitat quality in aquatic environments. Excess turbidity can be caused by physical disruption of the stream bank or bed, and through sediment inputs from runoff in upland upland areas.  Turbidity is measured using a handheld multiparameter sonde.
+### Turbidity 
+The figure below displays a measure of water clarity, measured in nephelometric turbidity units (NTU), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. Turbidity is measured by determining how much light can pass through the water.Water clarity directly affects ecological productivity and habitat quality in aquatic environments. Excessive turbidity can be caused by physical disruption of the stream channel or through sediment inputs as a result of runoff and upland erosion.  Turbidity is measured using a handheld YSI DSS Pro.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -720,6 +726,7 @@ TEMP_PLOT = ggplot(TEMP)+
   geom_point(aes(x = Datetime, y = TURB))+
   geom_line(aes(x = Datetime, y = TURB))+
   ylab("Turbidity (NTU)")+
+  xlab("")+
   theme_economist()
 
 return(TEMP_PLOT)
@@ -730,8 +737,8 @@ return(TEMP_PLOT)
 
 \newpage
 
-### Discharge Time-Series
-The figure below shows the discharge of the stream, measured in cubic feet per second (CFS), over time for this site (`r FIRST_SAMPLE` - `r LAST_SAMPLE`). Stream discharge is calculated by measuring velocity across the cross-sectional area of a stream channel. Measuring devices include a velocimeter and stadia rod or measuring tape. Discharge allows us to calculate nutrient and sediment loading for a stream.
+### Discharge (Q)
+The figure below shows the discharge of the stream, measured in cubic feet per second (CFS) from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. Stream discharge is calculated by measuring velocity across the cross-sectional area of a stream channel. Measuring devices include a velocimeter and stadia rod or measuring tape. Discharge allows for the calculation of nutrient and sediment loading for a stream.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -745,6 +752,7 @@ TEMP_PLOT = ggplot(TEMP)+
   geom_point(aes(x = Datetime, y = Q))+
   geom_line(aes(x = Datetime, y = Q))+
   ylab("Discharge (CFS)")+
+  xlab("")+
   theme_economist()
 
 return(TEMP_PLOT)
@@ -755,31 +763,34 @@ return(TEMP_PLOT)
 
 \newpage
 
-### Fecal Coliform Time-Series
-The figure below shows the fecal coliform measurements in the water, colonies per 100 milliliters (cols/100mL), over time for this site (`r FIRST_SAMPLE` - `r LAST_SAMPLE`). Fecal coliform bacteria is a group of coliform bacteria that is used as an indicator of fecal contamination from animals. Fecal coliform samples are collected in-stream and analyzed at the Colfax Wastewater Treatment Plant. The graph includes the maximum threshold for fecal coliform levels according to the Water Quality Standards for Surface Waters of the State of Washington [WAC 173-201A-200].
-
+### Fecal Coliform 
+The figure below shows Fecal Coliform (FC), measured in colonies per 100 milliliters (cols/100mL), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. The graph also included a red dotted line representing the The State of Washington's threshold for fecal coliform levels ([**WAC 173-201A-200**](https://apps.leg.wa.gov/wac/default.aspx?cite=173-201a-200)). FC is a group of coliform bacteria used to indicate fecal contamination in water bodies. FC samples are collected in-stream and analyzed at the Colfax Wastewater Treatment Plant. 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 library(plotly)
 library(ggplot2)
-if(STREAM_NAME == "Cow Creek" | STREAM_NAME == "Thorn Creek (Uniontown)"| STREAM_NAME == "North Fork Palouse River"){
-TEMP = COW0.07_FIXED[,c(2, 18)]
-colnames(TEMP) = c("Datetime", "FC")
 
-TEMP_PLOT = ggplot(TEMP, aes(x = Datetime, y = FC))+
-  geom_point()+
-  geom_line()+
-  ylab("Fecal Coliform (cols/100mL)")+
-  geom_hline(yintercept = 200, color = "red", size = 1, linetype ="dashed", show.legend = TRUE)+
-  theme_economist()
+if(STREAM_NAME == "Kamiache Creek" | STREAM_NAME == "Thorn Creek (Saint John)"){
+  
+print("Data unavailable for this site")
+
+} else{
+
+  TEMP = COW0.07_FIXED[,c(2, 18)]
+  colnames(TEMP) = c("Datetime", "FC")
+
+  TEMP_PLOT = ggplot(TEMP, aes(x = Datetime, y = FC))+
+    geom_point()+
+    geom_line()+
+    ylab("Fecal Coliform (cols/100mL)")+
+    xlab("")+
+    geom_hline(yintercept = 200, color = "red", size = 1, linetype ="dashed", show.legend = TRUE)+
+    theme_economist()
 
 
-return(TEMP_PLOT)
+print(TEMP_PLOT)
 }
 
-if(STREAM_NAME == "Kamiache Creek" | STREAM_NAME == "Thorn Creek (Saint John)")
-  
-cat("Data unavailable for this site")
 
 ```
 
@@ -787,30 +798,35 @@ cat("Data unavailable for this site")
 
 \newpage
 
-### Ammonia Time-Series
-The figure below shows the ammonia measurements, measured in milligrams per liter (mg/L), over time for this site (`r FIRST_SAMPLE` - `r LAST_SAMPLE`). Nitrogen is found naturally in the environment and is fairly abundant. However, nitrogen levels can also be influenced by humans as well, sewage systems and fertilizer application are good examples of nitrogen sources. Nitrogen helps aquatic plants grow, but in excess this can cause overgrowth, which reduces dissolved oxygen in water, leading to eutrophication of a body of water if left unchecked. Nitrate, nitrite, and ammonia are three common forms of nitrogen we find in streams. Ammonia samples are collected in-stream and analyzed at Manchester Environmental Laboratory.
+### Ammonia 
+The figure below displays ammonia concentration, measured in milligrams per liter (mg/L), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. Nitrate, nitrite, and ammonia are three common forms of nitrogen found in streams. Nitrogen is found naturally in the environment and is fairly abundant. However, excess nitrogen, from sewage systems and fertilizer application, can push aquatic ecosystems out of equilibrium and harm them. Ammonia concentrations are derived from in-stream water samples analyzed at Manchester Environmental Laboratory.
+
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 library(plotly)
 library(ggplot2)
-if(STREAM_NAME == "Cow Creek" | STREAM_NAME == "Thorn Creek (Uniontown)" | STREAM_NAME == "North Fork Palouse River"){
 
-TEMP = COW0.07_FIXED[,c(2, 3)]
-colnames(TEMP) = c("Datetime", "Ammonia")
+if(STREAM_NAME == "Kamiache Creek" | STREAM_NAME == "Thorn Creek (Saint John)"){
+  
+print("Data unavailable for this site")
 
-TEMP_PLOT = ggplot(TEMP)+
+} else{
+
+  TEMP = COW0.07_FIXED[,c(2, 3)]
+  colnames(TEMP) = c("Datetime", "Ammonia")
+
+  TEMP_PLOT = ggplot(TEMP)+
   geom_point(aes(x = Datetime, y = Ammonia))+
   geom_line(aes(x = Datetime, y = Ammonia))+
   ylab("Ammonia (mg/L)")+
+  xlab("")+
   theme_economist()
 
-return(TEMP_PLOT)
+  print(TEMP_PLOT)
 }
 
-if(STREAM_NAME == "Kamiache Creek" | STREAM_NAME == "Thorn Creek (Saint John)")
-  
-cat("Data unavailable for this site")
+
 
 
 ```
@@ -819,8 +835,8 @@ cat("Data unavailable for this site")
 
 \newpage
 
-### Nitrate/Nitrite Time-Series
-The figure below shows the nitrate & nitrite measurements, both measured in milligrams per liter (mg/L), over time for this site (`r FIRST_SAMPLE` - `r LAST_SAMPLE`). Nitrogen is found naturally in the environment and is fairly abundant. However, nitrogen levels can also be influenced by humans as well, sewage systems and fertilizer application are good examples of nitrogen sources. Nitrogen helps aquatic plants grow, but in excess this can cause overgrowth, which reduces dissolved oxygen in water, leading to eutrophication of a body of water if left unchecked. Nitrate, nitrite, and ammonia are three common forms of nitrogen we find in streams. Nitrate & nitrite samples are collected in-stream and analyzed at Manchester Environmental Laboratory.
+### Nitrate/Nitrite 
+The figure below displays nitrate / nitrite measurements, measured in milligrams per liter (mg/L), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. As stated about nitrate, nitrite, and ammonia are all sources of Nitrogen in rivers.Nitrate & nitrite samples are collected in-stream and analyzed at Manchester Environmental Laboratory. See above for more information on the role of Nitrogen in aquatic ecosystems.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -828,7 +844,7 @@ library(plotly)
 library(ggplot2)
 
 if(STREAM_NAME == "South Fork Palouse River"){
- TEMP = COW0.07_FIXED[,c(2, 5)]
+ TEMP = COW0.07_FIXED[,c(2, 4)]
 } else{TEMP = COW0.07_FIXED[,c(2, 4)]}
 
 colnames(TEMP) = c("Datetime", "N")
@@ -837,6 +853,7 @@ TEMP_PLOT = ggplot(TEMP)+
   geom_point(aes(x = Datetime, y = N))+
   geom_line(aes(x = Datetime, y = N))+
   ylab("Nitrate/Nitrite (mg/L)")+
+  xlab("")+
   theme_economist()
 
 return(TEMP_PLOT)
@@ -847,8 +864,8 @@ return(TEMP_PLOT)
 
 \newpage
 
-### Total Phosphorus Time-Series
-The figure below shows the total phosphorus measurements, measured in milligrams per liter (mg/L), over time for this site (`r FIRST_SAMPLE` - `r LAST_SAMPLE`). Much like nitrogen, phosphorus is a vital nutrient for aquatic plant life. Phosphorus is also used as a chemical fertilizer in agriculture and can lead to eutrophication in bodies of water. Total phosphorus and orthophosphate are the two forms of phosphorus we measure in streams. Total phosphorus includes all forms of phosphorus found in the stream, similar to total organic carbon in the case or carbon in the stream. Total phosphorus samples are collected in-stream and analyzed at Manchester Environmental Laboratory. The graph includes the maximum allowance threshold recommended for total phosphorus levels by the U.S. Environmental Protection Agency.
+### Total Phosphorus
+The figure below displays the total phosphorus concentration , in milligrams per liter (mg/L), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. Also , denoted by a red dotted line, is the threshold concentration for phosphorus recommenced by the U.S EPA. Total phosphorus and orthophosphate are two forms of phosphorus measured in streams. Much like nitrogen, while being a vital nutrient for aquatic plant life, when present in excess, Phosphorus can be detrimental. Phosphorus is used as a chemical fertilizer in agriculture and can lead to eutrophication in streams and lakes. Total phosphorus samples are collected in-stream and analyzed at Manchester Environmental Laboratory. 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -862,6 +879,7 @@ TEMP_PLOT = ggplot(TEMP)+
   geom_point(aes(x = Datetime, y = TP))+
   geom_line(aes(x = Datetime, y = TP))+
   ylab("Total Phosphorus (mg/L)")+
+  xlab("")+
   geom_hline(yintercept = 0.1, color = "red", size = 1, linetype ="dashed", show.legend = TRUE)+
   theme_economist()
 
@@ -873,9 +891,8 @@ return(TEMP_PLOT)
 
 \newpage
 
-### Orthophosphate Time-Series
-The figure below shows the orthophosphate measurements, measured in milligrams per liter (mg/L), over time for this site (`r FIRST_SAMPLE` - `r LAST_SAMPLE`). Much like nitrogen, phosphorus is a vital nutrient for aquatic plant life. Phosphorus is also used as a chemical fertilizer in agriculture and can lead to eutrophication in bodies of water. Total phosphorus and orthophosphate are the two forms of phosphorus we measure in streams. Orthophosphates (OP) are a reactive form of phosphates that are mainly sourced from fertilizers or other human sources. Orthophosphates can give a good estimation on how much phosphorus is available for plants. Orthophosphate samples are collected in-stream and analyzed at Manchester Environmental Laboratory.
-
+### Orthophosphate
+The figure below displays orthophosphate concentrations,in milligrams per liter (mg/L), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. In addition to the total Phosphorus values displayed above, Orthophosphates can provide an estimate of how much phosphorus is plant available as well as help to identify pollution sources since Orthophosphates (OP) are usually derived from fertilizers or other anthropogenic sources. Orthophosphate samples are collected in-stream and analyzed at Manchester Environmental Laboratory.
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 library(plotly)
@@ -888,6 +905,7 @@ TEMP_PLOT = ggplot(TEMP)+
   geom_point(aes(x = Datetime, y = OP))+
   geom_line(aes(x = Datetime, y = OP))+
   ylab("Orthophosphate (mg/L)")+
+  xlab("")+
   theme_economist()
 
 return(TEMP_PLOT)
@@ -898,8 +916,8 @@ return(TEMP_PLOT)
 
 \newpage
 
-### Suspended Sediment Concentration Time-Series
-The figure below shows the suspended sediment concentration measurements, measured in milligrams per liter (mg/L), over time for this site (`r FIRST_SAMPLE` - `r LAST_SAMPLE`). Sediment typically finds its way to a stream after a rainfall event through the process of runoff. Suspended sediment are the particles of soil that is moved by water through a channel. It is important to know how much sediment a stream conveys, as sediment deposited downstream can alter the way a river flows. Suspended sediment concentration varies constantly in relation to discharge, but frequent sampling gives us an idea of how much sediment moves through the river over time. Suspended sediment concentration samples are collected in-stream and analyzed at Manchester Environmental Laboratory.`
+### Suspended Sediment Concentration 
+The figure below displays suspended sediment concentration (SSC), measured in milligrams per liter (mg/L), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. Sediment typically enters streams after a rainfall event through erosion and runoff. Depending on the power of the stream and amount of sediment, it can either be transported downstream or deposited in the channel. Both of these actions, in excess, can cause problems for aquatic ecosystems and downstream water users since sediment can carry pollutants and have other adverse effects on biota. SSC samples are collected in-stream and analyzed at Manchester Environmental Laboratory.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -913,6 +931,7 @@ TEMP_PLOT = ggplot(TEMP)+
   geom_point(aes(x = Datetime, y = SSC))+
   geom_line(aes(x = Datetime, y = SSC))+
   ylab("Suspended Sediment Concentration (mg/L)")+
+  xlab("")+
   theme_economist()
 
 return(TEMP_PLOT)
