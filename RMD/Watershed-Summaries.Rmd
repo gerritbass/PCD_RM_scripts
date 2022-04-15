@@ -104,8 +104,8 @@ if(WATERSHED_NAME == "Kamiache and Thorn Creeks"){
 #NORTH & SOUTHFORK DATA SETUP
 if(WATERSHED_NAME == "North and South Fork"){
   COW0.07 <-  as.data.frame(NSF_MASTER)
-  COW0.07$DT_round = mdy_hm(COW0.07$DT_round) %>%
-  format(format = "%m/%d/%Y")
+  COW0.07$DT_round = mdy_hm(COW0.07$DT_round)
+  
   
   COW0.07 = COW0.07 = COW0.07[order(COW0.07$DT_round),]
   COW0.07$CREEK = NA
@@ -198,14 +198,16 @@ TEMP_PLOT = ggplot(TEMP, aes(x = as.Date(Datetime), y = Temperature, group = fac
   geom_hline(aes(yintercept = 17.5, linetype ="Temperature Maximum"), color = "red", size = 2)+
   scale_linetype_manual(name = "Water Quality Criteria", values = 2, 
                       guide = guide_legend(override.aes = list(color = "red")))+
-  ylab("Water Temperature (C)")+
+  ylab("Water Temperature (degC)")+
   xlab("")+
-  theme_economist(base_size = 32)+
-  theme(legend.position = "right")+
+  theme_solarized_2(light = FALSE, base_size = 20)+
+  theme(legend.position = "right", panel.grid.minor.x = element_blank())+
   labs(color = "Monitoring Station")+
   facet_grid(CREEK~.)+
   theme(panel.border = element_rect(colour = "black", fill=NA, size=2))+
-  scale_color_manual(values = colors)
+  scale_color_manual(values = colors)+
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y")+
+  theme(axis.text.x=element_text(angle=60, hjust=1))
 
 TEMP_PLOT
 
@@ -232,12 +234,15 @@ TEMP_PLOT = ggplot(TEMP, aes(x = as.Date(Datetime), y = DO, group = factor(Stati
                       guide = guide_legend(override.aes = list(color = "red")))+
   ylab("Dissolved Oxygen (mg/L)")+
   xlab("")+
-  theme_economist(base_size = 20)+
-  theme(legend.position = "right")+
+  theme_solarized_2(light = FALSE, base_size = 20)+
+  theme(legend.position = "right", panel.grid.minor.x = element_blank())+
   labs(color = "Monitoring Station")+
   facet_grid(CREEK~.)+
   theme(panel.border = element_rect(colour = "black", fill=NA, size=2))+
-  scale_color_manual(values = colors)
+  scale_color_manual(values = colors)+
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y")+
+  theme(axis.text.x=element_text(angle=60, hjust=1))
+
 
 TEMP_PLOT
 
@@ -260,12 +265,15 @@ TEMP_PLOT = ggplot(TEMP, aes(x = as.Date(Datetime), y = COND, group = factor(Sta
   geom_line(size = 2)+
   ylab("Conductivity (uS/cm)")+
   xlab("")+
-  theme_economist(base_size = 20)+
-  theme(legend.position = "right")+
+  theme_solarized_2(light = FALSE, base_size = 20)+
+  theme(legend.position = "right", panel.grid.minor.x = element_blank())+
   labs(color = "Monitoring Station")+
   facet_grid(CREEK~.)+
   theme(panel.border = element_rect(colour = "black", fill=NA, size=2))+
-  scale_color_manual(values = colors)
+  scale_color_manual(values = colors)+
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y")+
+  theme(axis.text.x=element_text(angle=60, hjust=1))
+
 
 TEMP_PLOT
 
@@ -293,12 +301,15 @@ TEMP_PLOT = ggplot(TEMP, aes(x = as.Date(Datetime), y = pH, group = factor(Stati
                       guide = guide_legend(override.aes = list(color = "red")))+
   ylab("pH")+
   xlab("")+
-  theme_economist(base_size = 20)+
-  theme(legend.position = "right")+
+  theme_solarized_2(light = FALSE, base_size = 20)+
+  theme(legend.position = "right", panel.grid.minor.x = element_blank())+
   labs(color = "Monitoring Station")+
   facet_grid(CREEK~.)+
   theme(panel.border = element_rect(colour = "black", fill=NA, size=2))+
-  scale_color_manual(values = colors)
+  scale_color_manual(values = colors)+
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y")+
+  theme(axis.text.x=element_text(angle=60, hjust=1))
+
 
 TEMP_PLOT
 
@@ -322,12 +333,15 @@ TEMP_PLOT = ggplot(TEMP, aes(x = as.Date(Datetime), y = pH, group = factor(Stati
   geom_line(size = 2)+
   ylab("Turbidity (NTU)")+
   xlab("")+
-  theme_economist(base_size = 20)+
-  theme(legend.position = "right")+
+  theme_solarized_2(light = FALSE, base_size = 20)+
+  theme(legend.position = "right", panel.grid.minor.x = element_blank())+
   labs(color = "Monitoring Station")+
   facet_grid(CREEK~.)+
   theme(panel.border = element_rect(colour = "black", fill=NA, size=2))+
-  scale_color_manual(values = colors)
+  scale_color_manual(values = colors)+
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y")+
+  theme(axis.text.x=element_text(angle=60, hjust=1))
+
 
 TEMP_PLOT
 
@@ -353,12 +367,15 @@ TEMP_PLOT = ggplot(TEMP, aes(x = as.Date(Datetime), y = pH, group = factor(Stati
   geom_line(size = 2)+
   ylab("Discharge (CFS)")+
   xlab("")+
-  theme_economist(base_size = 20)+
-  theme(legend.position = "right")+
+  theme_solarized_2(light = FALSE, base_size = 20)+
+  theme(legend.position = "right", panel.grid.minor.x = element_blank())+
   labs(color = "Monitoring Station")+
   facet_grid(CREEK~., scales = "free_y")+
   theme(panel.border = element_rect(colour = "black", fill=NA, size=2))+
-  scale_color_manual(values = colors)
+  scale_color_manual(values = colors)+
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y")+
+  theme(axis.text.x=element_text(angle=60, hjust=1))
+
 
 TEMP_PLOT
 
@@ -387,12 +404,16 @@ TEMP_PLOT = ggplot(TEMP, aes(x = as.Date(Datetime), y = pH, group = factor(Stati
   scale_linetype_manual(name = "Water Quality Criteria", values = 2, 
                       guide = guide_legend(override.aes = list(color = "red")))+
   ylab("Fecal Coliform (cols/100mL)")+
-  theme_economist(base_size = 20)+
-  theme(legend.position = "right")+
+  xlab("")+
+  theme_solarized_2(light = FALSE, base_size = 20)+
+  theme(legend.position = "right", panel.grid.minor.x = element_blank())+
   labs(color = "Monitoring Station")+
   facet_grid(CREEK~.)+
   theme(panel.border = element_rect(colour = "black", fill=NA, size=2))+
-  scale_color_manual(values = colors)
+  scale_color_manual(values = colors)+
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y")+
+  theme(axis.text.x=element_text(angle=60, hjust=1))
+
 
 TEMP_PLOT
 }
@@ -422,12 +443,14 @@ if(WATERSHED_NAME == "North and South Fork"){
     geom_line(size = 2)+
     ylab("Ammonia (mg/L)")+
     xlab("")+
-    theme_economist(base_size = 20)+
-    theme(legend.position = "right")+
+    theme_solarized_2(light = FALSE, base_size = 20)+
+    theme(legend.position = "right", panel.grid.minor.x = element_blank())+
     labs(color = "Monitoring Station")+
     facet_grid(CREEK~.)+
     theme(panel.border = element_rect(colour = "black", fill=NA, size=2))+
-    scale_color_manual(values = colors)
+    scale_color_manual(values = colors)+
+    scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y")+
+    theme(axis.text.x=element_text(angle=60, hjust=1))
   
   TEMP_PLOT
 }
@@ -456,12 +479,15 @@ TEMP_PLOT = ggplot(TEMP, aes(x = as.Date(Datetime), y = pH, group = factor(Stati
   geom_line(size = 2)+
   ylab("Nitrate/Nitrite (mg/L)")+
   xlab("")+
-  theme_economist(base_size = 20)+
-  theme(legend.position = "right")+
+  theme_solarized_2(light = FALSE, base_size = 20)+
+  theme(legend.position = "right", panel.grid.minor.x = element_blank())+
   labs(color = "Monitoring Station")+
   facet_grid(CREEK~.)+
   theme(panel.border = element_rect(colour = "black", fill=NA, size=2))+
-  scale_color_manual(values = colors)
+  scale_color_manual(values = colors)+
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y")+
+  theme(axis.text.x=element_text(angle=60, hjust=1))
+
 
 TEMP_PLOT
 
@@ -490,12 +516,15 @@ TEMP_PLOT = ggplot(TEMP, aes(x = as.Date(Datetime), y = pH, group = factor(Stati
                       guide = guide_legend(override.aes = list(color = "red")))+
   ylab("Total Phosphorus (mg/L)")+
   xlab("")+
-  theme_economist(base_size = 20)+
-  theme(legend.position = "right")+
+  theme_solarized_2(light = FALSE, base_size = 20)+
+  theme(legend.position = "right", panel.grid.minor.x = element_blank())+
   labs(color = "Monitoring Station")+
   facet_grid(CREEK~.)+
   theme(panel.border = element_rect(colour = "black", fill=NA, size=2))+
-  scale_color_manual(values = colors)
+  scale_color_manual(values = colors)+
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y")+
+  theme(axis.text.x=element_text(angle=60, hjust=1))
+
 
 TEMP_PLOT
 
@@ -519,12 +548,15 @@ TEMP_PLOT = ggplot(TEMP, aes(x = as.Date(Datetime), y = pH, group = factor(Stati
   geom_line(size = 2)+
   ylab("Orthophosphate (mg/L)")+
   xlab("")+
-  theme_economist(base_size = 20)+
-  theme(legend.position = "right")+
+  theme_solarized_2(light = FALSE, base_size = 20)+
+  theme(legend.position = "right", panel.grid.minor.x = element_blank())+
   labs(color = "Monitoring Station")+
   facet_grid(CREEK~.)+
   theme(panel.border = element_rect(colour = "black", fill=NA, size=2))+
-  scale_color_manual(values = colors)
+  scale_color_manual(values = colors)+
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y")+
+  theme(axis.text.x=element_text(angle=60, hjust=1))
+
 
 TEMP_PLOT
 
@@ -550,12 +582,15 @@ TEMP_PLOT = ggplot(TEMP, aes(x = as.Date(Datetime), y = pH, group = factor(Stati
   geom_line(size = 2)+
   ylab("Suspended Sediment Concentration (mg/L)")+
   xlab("")+
-  theme_economist(base_size = 20)+
-  theme(legend.position = "right")+
+  theme_solarized_2(light = FALSE, base_size = 20)+
+  theme(legend.position = "right", panel.grid.minor.x = element_blank())+
   labs(color = "Monitoring Station")+
   facet_grid(CREEK~.)+
   theme(panel.border = element_rect(colour = "black", fill=NA, size=2))+
-  scale_color_manual(values = colors)
+  scale_color_manual(values = colors)+
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y")+
+  theme(axis.text.x=element_text(angle=60, hjust=1))
+
 
 TEMP_PLOT
 
