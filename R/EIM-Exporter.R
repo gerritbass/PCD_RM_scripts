@@ -2,7 +2,7 @@
 # The following functions will pull all Manchester Lab data, compile it, and spit it out in the correct columns for the EIM
 # **Note, you should still double check the resulting .csv to make sure all the data transferred over
 
-library(lattice )
+library(lattice)
 library(latticeExtra)
 library(MASS)
 library(ggplot2)
@@ -164,6 +164,9 @@ new_MEL <- list.files(path = "P:/Research_and_Monitoring/_04_Project_Data/Water_
 new_MEL <- new_MEL[,c(1:60)]
 new_MEL[is.na(new_MEL)] <- ""
 
-# Merge PR with new_MEL
+# Merge PR with new_MEL using rbind
+PR <- sapply(PR, as.character)
+PR[is.na(PR)] <- ""
+NFSF_EIM <- rbind(PR, new_MEL)
 
-
+write.csv(NFSF_EIM, "P:/Research_and_Monitoring/_05_Deliverables/_1_Draft/EIM/PALOUSE_TRIBS/PR_TRIBS_EIM.csv")
