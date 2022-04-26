@@ -17,6 +17,7 @@ library(Kendall)
 library(tidyr)
 library(dplyr)
 library(readxl)
+library(tidyverse)
 
 EIM_clean<- function(df){
   rdat = df[,c("PR_STATION_NM","FA_START_DT","FA_START_TM", "SM_IDENT_NR", "SM_COMPOSITE_FL", "SM_MATRIX_DS",
@@ -152,5 +153,15 @@ PR <- import.multiple.csv("P:/Research_and_Monitoring/_04_Project_Data/Water_Qua
                           "P:/Research_and_Monitoring/_05_Deliverables/_1_Draft/EIM/NFPR/PR_EIM.csv",
                           "WQC-2018-0010")
 
-  
+
+# Import new format of MEL .csvs and merge
+setwd("P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/Palouse_River_Tribs/Stream_Flow_and_Water_Quality/External_Lab_Data/Manchester Lab/Lab Data/_1_Raw/MEL_New_Format")
+
+new_MEL <- list.files(path = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/Palouse_River_Tribs/Stream_Flow_and_Water_Quality/External_Lab_Data/Manchester Lab/Lab Data/_1_Raw/MEL_New_Format",
+                      pattern = "\\.csv$",
+                      full.names = TRUE) %>%
+  map_df(~read_csv(.x, col_types = cols(.default = "c")))
+new_MEL <- new_MEL[,c(1:60)]
+
+
 
