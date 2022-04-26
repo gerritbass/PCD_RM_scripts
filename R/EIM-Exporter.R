@@ -162,6 +162,8 @@ new_MEL <- list.files(path = "P:/Research_and_Monitoring/_04_Project_Data/Water_
                       full.names = TRUE) %>%
   map_df(~read_csv(.x, col_types = cols(.default = "c")))
 new_MEL <- new_MEL[,c(1:60)]
+new_MEL[is.na(new_MEL)] <- ""
 
+# Merge PR with new_MEL
 
 
