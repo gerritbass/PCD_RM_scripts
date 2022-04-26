@@ -164,9 +164,44 @@ new_MEL <- list.files(path = "P:/Research_and_Monitoring/_04_Project_Data/Water_
 new_MEL <- new_MEL[,c(1:60)]
 new_MEL[is.na(new_MEL)] <- ""
 
+
 # Merge PR with new_MEL using rbind
 PR <- sapply(PR, as.character)
 PR[is.na(PR)] <- ""
 NFSF_EIM <- rbind(PR, new_MEL)
 
-write.csv(NFSF_EIM, "P:/Research_and_Monitoring/_05_Deliverables/_1_Draft/EIM/PALOUSE_TRIBS/PR_TRIBS_EIM.csv")
+NFSF_EIM = mutate(NFSF_EIM, Study_Specific_Location_ID=recode(Study_Specific_Location_ID,
+                                         "NFPR 3"="NFPR3",
+                                         "DRY0.51"="DC0.51",
+                                         "FMC 0.28"="FMC0.28",
+                                         "NFPR 12" = "NFPR12",
+                                         "NFPR 5A"="NFPR5A",
+                                         "NFPR 6"="NFPR6",
+                                         "NFPR 8"="NFPR8",
+                                         "NFPR 9"="NFPR9",
+                                         "SFPR 49.44" ="SFPR49.44",
+                                         "SFPR 47.23"="SFPR47.23",
+                                         "SFPR 12.98"="SFPR12.98",
+                                         "UFC 27.31"="UFC27.31",
+                                         "STEPTOE 0.70"="STEPTOE0.70",
+                                         "STEPTOE 5.23"="STEPTOE5.23",
+                                         "SFC 0.35"="SFC0.35",
+                                         "PAL 112.4"="PAL112.4",
+                                         "WC 0.01"="WC0.01"))
+
+# Copy the Study ID to every row and copy Location ID from Study Specific Location ID
+
+NFSF_EIM$Study_ID <- "WQC-2018-0010"
+NFSF_EIM$Location_ID <- NFSF_EIM$Study_Specific_Location_ID 
+
+# Remove rows of lab QC data
+NFSF_EIM2 <- subset(NFSF_EIM, Field_Collection_Type != "QC")
+
+# Remove rows from other sites
+NFSF_EIM2 <- NFSF_EIM2 %>%
+  filter(!str_detect(NFSF_EIM2$Study_Specific_Location_ID, "COW0.07|KC0.28|KC02.8|TC0.06|TH0.12|THO.12"))
+
+
+
+
+write.csv(NFSF_EIM2, "P:/Research_and_Monitoring/_05_Deliverables/_1_Draft/EIM/PALOUSE_TRIBS/PR_TRIBS_EIM2.csv")
