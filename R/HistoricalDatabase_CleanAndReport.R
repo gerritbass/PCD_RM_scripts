@@ -9,7 +9,7 @@ library(stringr)
 library(tidyverse)
 
 setwd("P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports")
-db <- read.csv("PCDConservationProjectDatabase_20220201.csv", header=T,na.strings=c("","NA"))
+db <- read.csv("PCDConservationProjectDatabase_20220224.csv", header=T,na.strings=c("","NA"))
 colnames(db)
 ##find rows with missing information
 missing <- filter_at(db, vars(HUC.12.Name,
@@ -148,9 +148,10 @@ write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Proj
 
 ########### 
 #Find rows recorded in degrees minutes seconds
-degrees <- FINAL[str_detect(FINAL$Latitude_1, "'") == TRUE,] %>%
-  drop_na(Latitude_1) %>%
-  data.frame(lapply(degrees, as.character), stringsAsFactors=FALSE)
+#Only use if needed.
+#degrees <- FINAL[str_detect(FINAL$Latitude_1, "'") == TRUE,] %>%
+ # drop_na(Latitude_1) %>%
+  #data.frame(lapply(degrees, as.character), stringsAsFactors=FALSE)
 
 
 ## Make .csv without NA lats/longs
