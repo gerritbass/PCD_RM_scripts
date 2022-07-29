@@ -578,3 +578,20 @@ HUC12_livestock <- merge(HUC12_l, HUC12_lpractices)
 
 write.csv(HUC12_livestock, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/HUC12/HUC12_livestock220729.csv")
 
+
+####################################################################################
+##summarize by current year (2022)
+sum2022 <- FINAL[str_detect(FINAL$Project.Year, "2022") == TRUE,]
+table(is.na(sum2022$Employee.Name))
+test <- subset(sum2022, is.na(Employee.Name))
+sum20220729 <- subset(sum2022, !is.na(Employee.Name))
+write.csv(sum20220729, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/summary20220729.csv")
+
+#summarize by acres
+acres22 <- subset(sum20220729, sum20220729$Unit=="Acres")
+totalacres2022 <- acres22 %>%
+  group_by(`NRCS Code and Description`) %>%
+  summarise(totalacres = sum(Measurement, na.rm = TRUE)) %>%
+  na.omit(totalacres2022)
+print(totalacres2022)
+write.csv(totalacres2022, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/totalacres20220729.csv")
