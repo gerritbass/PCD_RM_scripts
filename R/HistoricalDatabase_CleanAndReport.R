@@ -467,7 +467,7 @@ HUC12_measure <- FINAL %>%      ###summarize by HUC12 and practices
   na.omit(HUC12_measure)
   HUC12_m <- HUC12_measure[, c(1, 2, 4, 3)]
 print(HUC12_m)
-write.csv(HUC12_m, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/HUC12/HUC12_measurements22.csv")
+write.csv(HUC12_m, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/HUC12/HUC12_measurements220729.csv")
 
 ##HUC12 Totals
 HUC12_sum <- FINAL %>%    ###summarize only by HUC12
@@ -489,7 +489,7 @@ print(HUC12_practices)
 ##merge both summarized tables
 HUC12_data <- merge(HUC12_sum, HUC12_practices)
 
-write.csv(HUC12_data, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/HUC12/HUC12_totals22.csv")
+write.csv(HUC12_data, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/HUC12/HUC12_totals220729.csv")
 
 ## Riparian projects in HUC12
 HUC12_r <- riparian %>%
@@ -510,7 +510,7 @@ print(HUC12_rpractices)
 ##merge both summarized tables
 HUC12_riparian <- merge(HUC12_r, HUC12_practices)
 
-write.csv(HUC12_riparian, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/HUC12/HUC12_riparian22.csv")
+write.csv(HUC12_riparian, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/HUC12/HUC12_riparian220729.csv")
 
 
 
@@ -533,7 +533,7 @@ print(HUC12_cpractices)
 ##merge both summarized tables
 HUC12_conag <- merge(HUC12_c, HUC12_cpractices)
 
-write.csv(HUC12_conag, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/HUC12/HUC12_conservationag22.csv")
+write.csv(HUC12_conag, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/HUC12/HUC12_conservationag220729.csv")
 
 ## Habitat projects in HUC12
 HUC12_h <- habitat %>%
@@ -554,7 +554,7 @@ print(HUC12_hpractices)
 ##merge both summarized tables
 HUC12_habitat <- merge(HUC12_h, HUC12_hpractices)
 
-write.csv(HUC12_habitat, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/HUC12/HUC12_habitat22.csv")
+write.csv(HUC12_habitat, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/HUC12/HUC12_habitat220729.csv")
 
 
 ## Livestock projects in HUC12
@@ -576,5 +576,5 @@ print(HUC12_lpractices)
 ##merge both summarized tables
 HUC12_livestock <- merge(HUC12_l, HUC12_lpractices)
 
-write.csv(HUC12_livestock, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/HUC12/HUC12_livestock22.csv")
+write.csv(HUC12_livestock, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/HUC12/HUC12_livestock220729.csv")
 
