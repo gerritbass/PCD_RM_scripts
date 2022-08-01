@@ -595,3 +595,9 @@ totalacres2022 <- acres22 %>%
   na.omit(totalacres2022)
 print(totalacres2022)
 write.csv(totalacres2022, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/totalacres20220801.csv")
+
+
+##########################################################################
+#Show duplicate projects - incentives
+dup <- FINAL[duplicated(FINAL[, c(9, 27)]),]
+write.csv(dup, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/duplicates20220801.csv")
