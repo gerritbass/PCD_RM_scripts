@@ -9,14 +9,14 @@ library(stringr)
 library(tidyverse)
 
 setwd("P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports")
-db <- read.csv("PCDConservationProjectDatabase_20220729.csv", header=T,na.strings=c("","NA"))
+db <- read.csv("PCDConservationProjectDatabase_20220801.csv", header=T,na.strings=c("","NA"))
 colnames(db)
 ##find rows with missing information
 missing <- filter_at(db, vars(HUC.12.Name,
                               Practice.Type.1.NRCS.Code.and.Description, 
                               Practice.Type.1.Measurement, 
                               Practice.Type.1.Unit.of.Measurement), any_vars(is.na(.)))
-write.csv(missing, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/missing220729.csv")
+write.csv(missing, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/missing220801.csv")
 ##remove missing from database
 db2 <- anti_join(db, missing, by = NULL, copy = FALSE)
 
@@ -110,7 +110,7 @@ FINAL = FINAL[,c(1:26, 31:34, 27:30)]
 fs<-unique(FINAL$Funding.Source)
 print(fs)
 practices<-unique(FINAL$`NRCS Code and Description`)
-write.csv(practices, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/NRCS_Practices220729.csv")
+write.csv(practices, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/NRCS_Practices220801.csv")
 
 ######### Multiple funding sources, column cleaning
 FINAL$Archive = NA
@@ -156,7 +156,7 @@ write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Proj
 
 ## Make .csv without NA lats/longs
 FINAL_points <- FINAL[!is.na(FINAL$Latitude_1),] 
-write.csv(FINAL_points, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/FINAL_points220729.csv")
+write.csv(FINAL_points, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/FINAL_points220801.csv")
 
 
 ###### Create subsets based on practice type
@@ -213,7 +213,7 @@ category_pie <- ggplot(category_sum) +
         plot.title = element_text(hjust = -0.5, vjust = -1))
 
 print(category_pie)
-ggsave('Project Type Pie Chart 220729.png', plot = category_pie, scale = 1, width = 5.5, height = 5.5, units = "in", dpi = "print")
+ggsave('Project Type Pie Chart 220801.png', plot = category_pie, scale = 1, width = 5.5, height = 5.5, units = "in", dpi = "print")
 
 ##sum totals
 total_funding <- FINAL %>%
@@ -270,7 +270,7 @@ R_dollars <- ggplot(total_r, aes(x = reorder(`NRCS Code and Description`, -total
        y = "Costshare Amount",
        title = "Dollars Spent by Riparian Practice Types from 1998-2022")
 print(R_dollars)
-ggsave('Dollars Spent on Riparian Practices 20220729.png', plot = R_dollars, scale = 1, width = 18, height = 10, units = "in", dpi = "print")
+ggsave('Dollars Spent on Riparian Practices 20220801.png', plot = R_dollars, scale = 1, width = 18, height = 10, units = "in", dpi = "print")
 
 ## conservation agriculture
 total_ca<- conservation_ag %>%
@@ -302,7 +302,7 @@ CA_dollars <- ggplot(total_ca, aes(x = reorder(`NRCS Code and Description`, -tot
        y = "Costshare Amount",
        title = "Dollars Spent by Conservation Agriculture Practice Types from 1998-2022")
 print(CA_dollars)
-ggsave('Dollars Spent on Conservation Agriculture Practices 20220729.png', plot = CA_dollars, scale = 1, width = 20, height = 12, units = "in", dpi = "print")
+ggsave('Dollars Spent on Conservation Agriculture Practices 20220801.png', plot = CA_dollars, scale = 1, width = 20, height = 12, units = "in", dpi = "print")
 
 ##habitat restoration
 total_h<- habitat %>%
@@ -334,7 +334,7 @@ H_dollars <- ggplot(total_h, aes(x = reorder(`NRCS Code and Description`, -total
        y = "Costshare Amount",
        title = "Dollars Spent by Habitat Restoration Practice Types from 1998-2022")
 print(H_dollars)
-ggsave('Dollars Spent on Habitat Restoration Practices 20220729.png', plot = H_dollars, scale = 1, width = 17, height = 10, units = "in", dpi = "print")
+ggsave('Dollars Spent on Habitat Restoration Practices 20220801.png', plot = H_dollars, scale = 1, width = 17, height = 10, units = "in", dpi = "print")
 
 ## livestock
 total_l<- livestock %>%
@@ -366,7 +366,7 @@ L_dollars <- ggplot(total_l, aes(x = reorder(`NRCS Code and Description`, -total
        y = "Costshare Amount",
        title = "Dollars Spent by Livestock Practice Types from 1998-2022")
 print(L_dollars)
-ggsave('Dollars Spent on Livestock Practices 20220729.png', plot = L_dollars, scale = 1, width = 23, height = 10, units = "in", dpi = "print")
+ggsave('Dollars Spent on Livestock Practices 20220801.png', plot = L_dollars, scale = 1, width = 23, height = 10, units = "in", dpi = "print")
 
 ###### Funding by year by project types
 FINAL$Project.Year <- as.numeric(as.character(FINAL$Project.Year))
@@ -382,7 +382,7 @@ pt_funding <- ggplot(data=subset(FINAL, !is.na(Project.Category)), aes(x = Proje
        y = "Costshare Amount",
        title = "Funding by Project Type 1998-2021")
 print(pt_funding)
-ggsave('Funding Overtime by Project Type 2021.png', plot = pt_funding, scale = 1, width = 15, height = 10, units = "in", dpi = "print")
+ggsave('Funding Overtime by Project Type 20220801.png', plot = pt_funding, scale = 1, width = 15, height = 10, units = "in", dpi = "print")
 
 
 ###scatterplot of funding by year by project types
@@ -403,7 +403,7 @@ scatter_funding<- ggplot(PROJECT_CS_SUM, aes(x = Project.Year, y = Project_Sum, 
        title = "Funding Overtime by Project Type (1998-2022)")
 
 print(scatter_funding)
-ggsave('Scatterplot Funding Overtime by Project Type 20220729.png', plot = scatter_funding, scale = 1, width = 15, height = 10, units = "in", dpi = "print")
+ggsave('Scatterplot Funding Overtime by Project Type 20220801.png', plot = scatter_funding, scale = 1, width = 15, height = 10, units = "in", dpi = "print")
 
 
 ##total funding without fill
@@ -427,7 +427,7 @@ total_funds <- ggplot(total_f, aes(x = Project.Year, y = totaldol))+
        y = "Costshare Amount",
        title = "Total Funding 1998-2022")
 print(total_funds)
-ggsave('Funding Overtime 20220729.png', plot = total_funds, scale = 1, width = 18, height = 10, units = "in", dpi = "print")
+ggsave('Funding Overtime 20220801.png', plot = total_funds, scale = 1, width = 18, height = 10, units = "in", dpi = "print")
 
 acres = NA
 
@@ -444,7 +444,7 @@ pt_acreage<- ggplot(acres, aes(x = Project.Year, y = Measurement))+
        y = "Acres",
        title = "Acreage of Projects 1998-2022")
 print(pt_acreage)
-ggsave('Acreage Overtime by Project Type 20220729.png', plot = pt_acreage, scale = 1, width = 15, height = 10, units = "in", dpi = "print")
+ggsave('Acreage Overtime by Project Type 20220801.png', plot = pt_acreage, scale = 1, width = 15, height = 10, units = "in", dpi = "print")
 
 ##acreage sum totals
 total_acres <- acres %>%
@@ -467,7 +467,7 @@ HUC12_measure <- FINAL %>%      ###summarize by HUC12 and practices
   na.omit(HUC12_measure)
   HUC12_m <- HUC12_measure[, c(1, 2, 4, 3)]
 print(HUC12_m)
-write.csv(HUC12_m, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/HUC12/HUC12_measurements220729.csv")
+write.csv(HUC12_m, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/HUC12/HUC12_measurements220801.csv")
 
 ##HUC12 Totals
 HUC12_sum <- FINAL %>%    ###summarize only by HUC12
@@ -489,7 +489,7 @@ print(HUC12_practices)
 ##merge both summarized tables
 HUC12_data <- merge(HUC12_sum, HUC12_practices)
 
-write.csv(HUC12_data, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/HUC12/HUC12_totals220729.csv")
+write.csv(HUC12_data, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/HUC12/HUC12_totals220801.csv")
 
 ## Riparian projects in HUC12
 HUC12_r <- riparian %>%
@@ -510,7 +510,7 @@ print(HUC12_rpractices)
 ##merge both summarized tables
 HUC12_riparian <- merge(HUC12_r, HUC12_practices)
 
-write.csv(HUC12_riparian, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/HUC12/HUC12_riparian220729.csv")
+write.csv(HUC12_riparian, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/HUC12/HUC12_riparian220801.csv")
 
 
 
@@ -533,7 +533,7 @@ print(HUC12_cpractices)
 ##merge both summarized tables
 HUC12_conag <- merge(HUC12_c, HUC12_cpractices)
 
-write.csv(HUC12_conag, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/HUC12/HUC12_conservationag220729.csv")
+write.csv(HUC12_conag, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/HUC12/HUC12_conservationag220801.csv")
 
 ## Habitat projects in HUC12
 HUC12_h <- habitat %>%
@@ -554,7 +554,7 @@ print(HUC12_hpractices)
 ##merge both summarized tables
 HUC12_habitat <- merge(HUC12_h, HUC12_hpractices)
 
-write.csv(HUC12_habitat, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/HUC12/HUC12_habitat220729.csv")
+write.csv(HUC12_habitat, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/HUC12/HUC12_habitat220801.csv")
 
 
 ## Livestock projects in HUC12
@@ -576,7 +576,7 @@ print(HUC12_lpractices)
 ##merge both summarized tables
 HUC12_livestock <- merge(HUC12_l, HUC12_lpractices)
 
-write.csv(HUC12_livestock, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/HUC12/HUC12_livestock220729.csv")
+write.csv(HUC12_livestock, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/HUC12/HUC12_livestock220801.csv")
 
 
 ####################################################################################
@@ -585,7 +585,7 @@ sum2022 <- FINAL[str_detect(FINAL$Project.Year, "2022") == TRUE,]
 table(is.na(sum2022$Employee.Name))
 test <- subset(sum2022, is.na(Employee.Name))
 sum20220729 <- subset(sum2022, !is.na(Employee.Name))
-write.csv(sum20220729, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/summary20220729.csv")
+write.csv(sum20220729, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/summary20220801.csv")
 
 #summarize by acres
 acres22 <- subset(sum20220729, sum20220729$Unit=="Acres")
@@ -594,4 +594,4 @@ totalacres2022 <- acres22 %>%
   summarise(totalacres = sum(Measurement, na.rm = TRUE)) %>%
   na.omit(totalacres2022)
 print(totalacres2022)
-write.csv(totalacres2022, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/totalacres20220729.csv")
+write.csv(totalacres2022, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/totalacres20220801.csv")
