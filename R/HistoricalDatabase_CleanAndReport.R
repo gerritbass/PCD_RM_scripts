@@ -137,13 +137,13 @@ FINAL$Measurement <- as.numeric(as.character(FINAL$Measurement))
 ## Final cleaning to remove rows with NAs for code descriptions
 
 FINAL = FINAL[!is.na(FINAL$`NRCS Code and Description`),] # Projects without a code are deleted here
-write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/FINAL_DB_220729.csv")
-write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/piechart/FINAL_DB220729.csv")
-write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/RipRest_graph/FINAL_DB220729.csv")
-write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/TotalFunding/FINAL_DB220729.csv")
-write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/FundingSources/FINAL_DB220729.csv")
-write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/TotalCostshare/FINAL_DB220729.csv")
-write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/HUC12_Measurements/FINAL_DB220729.csv")
+write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/FINAL_DB_220801.csv")
+write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/piechart/FINAL_DB220801.csv")
+write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/RipRest_graph/FINAL_DB220801.csv")
+write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/TotalFunding/FINAL_DB220801.csv")
+write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/FundingSources/FINAL_DB220801.csv")
+write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/TotalCostshare/FINAL_DB220801.csv")
+write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/HUC12_Measurements/FINAL_DB220801.csv")
 
 
 ########### 
@@ -341,9 +341,10 @@ total_l<- livestock %>%
   group_by(`NRCS Code and Description`) %>%
   summarize(totaldol = sum(`Costshare Amount`, na.rm = TRUE)) %>%
   na.omit(total_l)
-total_l$totaldol = round(total_l$totaldol, 0)
+#total_l2 <- total_l[total_l$totaldol !=0,]
+total_l$totaldol = round(total_l2$totaldol, 0)
 
-L_dollars <- ggplot(total_l, aes(x = reorder(`NRCS Code and Description`, -totaldol), y = totaldol))+
+L_dollars <- ggplot(total_l[which(total_l$totaldol>0)], aes(x = reorder(`NRCS Code and Description`, -totaldol), y = totaldol))+
   geom_bar(stat = "identity", fill = "#D3DDDC")+
   scale_y_continuous("Costshare Amount",
                      labels = scales::dollar_format(scale = 0.001, suffix = "K"))+
@@ -581,11 +582,10 @@ write.csv(HUC12_livestock, "P:/Research_and_Monitoring/_04_Project_Data/Miscella
 
 ####################################################################################
 ##summarize by current year (2022)
-sum2022 <- FINAL[str_detect(FINAL$Project.Year, "2022") == TRUE,]
-table(is.na(sum2022$Employee.Name))
-test <- subset(sum2022, is.na(Employee.Name))
-sum20220729 <- subset(sum2022, !is.na(Employee.Name))
-write.csv(sum20220729, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/summary20220801.csv")
+FINAL$Completion.Date <- as.Date(FINAL$Completion.Date, "%m/%d/%y")
+FY2022 <- FINAL[FINAL$Completion.Date >= "2021-07-01" & FINAL$Completion.Date <= "2022-06-30",]
+sumFY22 <- subset(FY2022, !is.na(Employee.Name))
+write.csv(sumFY22, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/summaryFY22.csv")
 
 #summarize by acres
 acres22 <- subset(sum20220729, sum20220729$Unit=="Acres")
