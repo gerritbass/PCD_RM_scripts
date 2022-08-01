@@ -376,7 +376,7 @@ pt_funding <- ggplot(data=subset(FINAL, !is.na(Project.Category)), aes(x = Proje
   scale_fill_manual(values = wes_palette("Chevalier1", n=4)) +
   scale_y_continuous("Costshare Amount",
                      labels = scales::dollar_format(scale = 0.001, suffix = "K"))+ 
-  scale_x_continuous(limits = c(1997, 2022), breaks = 1998:2021) +
+  scale_x_continuous(limits = c(1997, 2023), breaks = 1998:2022) +
   theme_new()+
   labs(fill = "Project Type",
        x = "Project Year",
@@ -588,7 +588,7 @@ sumFY22 <- subset(FY2022, !is.na(Employee.Name))
 write.csv(sumFY22, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/summaryFY22.csv")
 
 #summarize by acres
-acres22 <- subset(sum20220729, sum20220729$Unit=="Acres")
+acres22 <- subset(sumFY22, sumFY22$Unit=="Acres")
 totalacres2022 <- acres22 %>%
   group_by(`NRCS Code and Description`) %>%
   summarise(totalacres = sum(Measurement, na.rm = TRUE)) %>%
