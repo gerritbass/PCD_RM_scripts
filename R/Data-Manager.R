@@ -1,4 +1,4 @@
-#libraries
+#libraries for data manager
 library(dplyr)
 library(xlsx)
 library(readxl)
@@ -6,6 +6,8 @@ library(lubridate)
 library(stringr)
 library(data.table)
 library(taskscheduleR)
+library(tidyr)
+library(readr)
 
 
 # Setting Working Directory
@@ -144,11 +146,76 @@ library(taskscheduleR)
                 temp_file$SITE = gsub("COW 266", "COW2.66A", temp_file$SITE) 
                 temp_file$SITE = gsub("COW 266", "COW2.66A", temp_file$SITE)}
             
+            # edited by Gerrit 7/8/22 to work with Satlink log file data format
+            else if(grepl("log",list.filenames[i])){
+              temp_file = read.csv(list.filenames[i], header = FALSE)
+              cat("    Assuming Satlink Data...", "\n")
+              if(grepl("Cow",list.filenames[i])){
+                names(temp_file) = c("date","time","param","value","unit", "tag")
+                mydate1 <-  temp_file[2,1] %>% 
+                  str_replace_all("/","-")
+                mydate2 = temp_file[nrow(temp_file),1] %>% 
+                  str_replace_all("/","-")
+                temp_file = subset(temp_file, select = -c(5,6))
+                temp_file= temp_file %>% 
+                  pivot_wider(names_from = param, values_from = value )
+                temp_file$Datetime = as_datetime(paste(temp_file$date, temp_file$time), format = "%m/%d/%Y %H:%M:%S")
+                temp_file$Site = "COW0.07"
+                temp_file$REMARK = ""
+                col_order <- c("Site","Datetime","REMARK","Stage temp","SpCond uscm","pH","ODO %sat","ODO mg/L","Turbid NTU","Stage")
+                temp_file = temp_file[, col_order]
+                temp_file <-  rename(temp_file,
+                                     WT = `Stage temp`,
+                                     SPC = `SpCond uscm`,
+                                     DOPerc = `ODO %sat`,
+                                     DO = `ODO mg/L`,
+                                     TURB = `Turbid NTU`,
+                                     S = `Stage`)
+                cat("        Quality Checking...", "\n")
+                
+                
+                myname = "COW"
+                myfilename1 = paste("_To_WISKI/Continuous Station/", myname, "_From_", mydate1, "_to_", mydate2, ".csv", sep="") 
+                myfilename2 = paste("_PCD_Archive/Continuous Station/", myname, "_From_", mydate1, "_to_", mydate2, ".csv", sep="") 
+                write_csv(temp_file, myfilename1, na = "")
+                write_csv(temp_file, myfilename2, na = "")}
+              
+              if(grepl("Thorn Creek Union",list.filenames[i])){
+                names(temp_file) = c("date","time","param","value","unit", "tag")
+                mydate1 <-  temp_file[2,1] %>% 
+                  str_replace_all("/","-")
+                mydate2 = temp_file[nrow(temp_file),1] %>% 
+                  str_replace_all("/","-")
+                temp_file = subset(temp_file, select = -c(5,6))
+                temp_file = temp_file %>% 
+                  pivot_wider(names_from = param, values_from = value )
+                temp_file$Datetime = as_datetime(paste(temp_file$date, temp_file$time), format = "%m/%d/%Y %H:%M:%S")
+                temp_file$Site = "TH0.12" 
+                temp_file$REMARK = ""
+                col_order <- c("Site","Datetime","REMARK","Stage temp","SpCond uscm","pH","ODO %sat","ODO mg/L","Turbid NTU","Stage")
+                temp_file = temp_file[, col_order]
+                temp_file <-  rename(temp_file,
+                                      WT = `Stage temp`,
+                                      SPC = `SpCond uscm`,
+                                      DOPerc = `ODO %sat`,
+                                      DO = `ODO mg/L`,
+                                      TURB = `Turbid NTU`,
+                                      S = `Stage`)
+                cat("        Quality Checking...", "\n")
+                
+                #repaste if needed
+                
+                myname = "THORN"
+                myfilename1 = paste("_To_WISKI/Continuous Station/", myname, "_From_", mydate1, "_to_", mydate2, ".csv", sep="") 
+                myfilename2 = paste("_PCD_Archive/Continuous Station/", myname, "_From_", mydate1, "_to_", mydate2, ".csv", sep="") 
+                write_csv(temp_file, myfilename1,  na = "")
+                write_csv(temp_file, myfilename2, na = "")}
+            } 
             else{
               temp_file = read.csv(list.filenames[i])
               if(ncol(temp_file) > 17){
                 cat("    Assuming MEL Data...", "\n")
-                mydate = temp_file[1,9]
+                mydate = temp_file[1,6]
                 mydate = mdy(mydate)
                 myfilename = paste("_To_WISKI/MEL/MEL", mydate, ".csv", sep="")
                 myfilename2 = paste("_PCD_Archive/MEL/MEL", mydate, ".csv", sep="")
@@ -156,7 +223,7 @@ library(taskscheduleR)
                 write.csv(temp_file, myfilename2, row.names = F, na = "")}
               
               else if(colnames(temp_file[1])=="UnixTimestamp"){
-                cat("    Assuming HydroSphere Data...", "\n")
+                cat("    Assuming Old HydroSphere Data...", "\n")
                 if(grepl("Cow",list.filenames[i])){
                   cat("      Assuming Site is Cow Creek...", "\n")
                   temp_file$Site = "COW0.07"
@@ -201,8 +268,8 @@ library(taskscheduleR)
                   mydate2 = substring(mydate2, 0, 10)
                   myfilename1 = paste("_To_WISKI/Continuous Station/", myname, "_From_", mydate1, "_to_", mydate2, ".csv", sep="") 
                   myfilename2 = paste("_PCD_Archive/Continuous Station/", myname, "_From_", mydate1, "_to_", mydate2, ".csv", sep="") 
-                  write.csv(temp_file, myfilename1, row.names = F, na = "")
-                  write.csv(temp_file, myfilename2, row.names = F, na = "")}
+                  write_csv(temp_file, myfilename1, row.names = F, na = "")
+                  write_csv(temp_file, myfilename2, row.names = F, na = "")}
                 
                 if(grepl("Kam",list.filenames[i])){
                   cat("      Assuming Site is Kamiache Creek...", "\n")
@@ -341,7 +408,7 @@ library(taskscheduleR)
                 }
               }
                      
-              else if(grepl("PST", list.filenames[i])){
+              else if(grepl("PDT", list.filenames[i])){
                 cat(paste("    Assuming HOBO File...", "\n"))
                 myname = substring(list.filenames[i], 11)
                 # Check NFPR
