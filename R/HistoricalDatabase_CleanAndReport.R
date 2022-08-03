@@ -103,8 +103,8 @@ NRCS_SHAPED$`Costshare Amount`<-as.numeric(gsub('[$,]', '', NRCS_SHAPED$`Costsha
 ## Merging & cleaning final dataframe
 
 FINAL = merge(db2, NRCS_SHAPED, by = "UNIQUE_ID", all.x = TRUE, all.y = TRUE)
-FINAL = FINAL[,-c(1, 28:70, 74, 76:115)]
-FINAL = FINAL[,c(1:26, 31:34, 27:30)]
+FINAL = FINAL[,-c(28:70, 74, 76:115)]
+FINAL = FINAL[,c(1:27, 32:35, 28:31)]
 
 ## Find unique values in funding source, year, etc
 fs<-unique(FINAL$Funding.Source)
@@ -599,5 +599,8 @@ write.csv(totalacres2022, "P:/Research_and_Monitoring/_04_Project_Data/Miscellan
 
 ##########################################################################
 #Show duplicate projects - incentives
-dup <- FINAL[duplicated(FINAL[, c(9, 27)]),]
-write.csv(dup, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/duplicates20220801.csv")
+dup <- FINAL[duplicated(FINAL[, c(10, 28)]),]
+dup2 <- FINAL[duplicated(FINAL[, c(10, 28)],fromLast=TRUE),]
+allDup<- full_join(dup, dup2, by = "UNIQUE_ID")
+write.csv(allDup, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/duplicates20220803.csv")
+
