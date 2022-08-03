@@ -137,6 +137,16 @@ FINAL$Measurement <- as.numeric(as.character(FINAL$Measurement))
 ## Final cleaning to remove rows with NAs for code descriptions
 
 FINAL = FINAL[!is.na(FINAL$`NRCS Code and Description`),] # Projects without a code are deleted here
+
+##########################################################################
+#Show duplicate projects - incentives
+dup <- FINAL[duplicated(FINAL[, c(10, 28)]),]
+dup2 <- FINAL[duplicated(FINAL[, c(10, 28)],fromLast=TRUE),]
+allDup<- full_join(dup, dup2, by = "UNIQUE_ID")
+write.csv(allDup, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/duplicates20220803.csv")
+FINAL <- FINAL[,c(2:37)]
+
+
 write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/FINAL_DB_220801.csv")
 write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/piechart/FINAL_DB220801.csv")
 write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/RipRest_graph/FINAL_DB220801.csv")
@@ -597,10 +607,4 @@ print(totalacres2022)
 write.csv(totalacres2022, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/totalacres20220801.csv")
 
 
-##########################################################################
-#Show duplicate projects - incentives
-dup <- FINAL[duplicated(FINAL[, c(10, 28)]),]
-dup2 <- FINAL[duplicated(FINAL[, c(10, 28)],fromLast=TRUE),]
-allDup<- full_join(dup, dup2, by = "UNIQUE_ID")
-write.csv(allDup, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/duplicates20220803.csv")
 
