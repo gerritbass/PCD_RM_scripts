@@ -217,7 +217,7 @@ category_pie <- ggplot(category_sum) +
   labs(fill= "Project Type",
        x = NULL,
        y = NULL,
-       title = "Percent of Projects Completed Between 1998-2021")+
+       title = "Percent of Projects Completed Between 1998-2022")+
   scale_fill_manual(values = wes_palette("Chevalier1", n=4)) +
   theme(panel.background = element_blank(), 
         plot.title = element_text(hjust = -0.5, vjust = -1))
@@ -257,7 +257,7 @@ total_r<- riparian %>%
   na.omit(total_r)
 total_r$totaldol = round(total_r$totaldol, 0)
 
-R_dollars <- ggplot(total_r, aes(x = reorder(`NRCS Code and Description`, -totaldol), y = totaldol))+
+R_dollars <- ggplot(total_r[which(total_r$totaldol>0),], aes(x = reorder(`NRCS Code and Description`, -totaldol), y = totaldol))+
   geom_bar(stat = "identity", fill = "#C7B19C")+
   scale_y_continuous("Costshare Amount",
                      labels = scales::dollar_format(scale = 0.001, suffix = "K"))+
@@ -289,7 +289,7 @@ total_ca<- conservation_ag %>%
   na.omit(total_ca)
 total_ca$totaldol = round(total_ca$totaldol, 0)
 
-CA_dollars <- ggplot(total_ca, aes(x = reorder(`NRCS Code and Description`, -totaldol), y = totaldol))+
+CA_dollars <- ggplot(total_ca[which(total_ca$totaldol>0),], aes(x = reorder(`NRCS Code and Description`, -totaldol), y = totaldol))+
   geom_bar(stat = "identity", fill = "#446455")+
   scale_y_continuous("Costshare Amount",
                      labels = scales::dollar_format(scale = 0.001, suffix = "K"))+
@@ -321,7 +321,7 @@ total_h<- habitat %>%
   na.omit(total_h)
 total_h$totaldol = round(total_h$totaldol, 0)
 
-H_dollars <- ggplot(total_h, aes(x = reorder(`NRCS Code and Description`, -totaldol), y = totaldol))+
+H_dollars <- ggplot(total_h[which(total_h$totaldol>0),], aes(x = reorder(`NRCS Code and Description`, -totaldol), y = totaldol))+
   geom_bar(stat = "identity", fill = "#FDD262")+
   scale_y_continuous("Costshare Amount",
                      labels = scales::dollar_format(scale = 0.001, suffix = "K"))+
@@ -351,10 +351,9 @@ total_l<- livestock %>%
   group_by(`NRCS Code and Description`) %>%
   summarize(totaldol = sum(`Costshare Amount`, na.rm = TRUE)) %>%
   na.omit(total_l)
-#total_l2 <- total_l[total_l$totaldol !=0,]
-total_l$totaldol = round(total_l2$totaldol, 0)
+total_l$totaldol = round(total_l$totaldol, 0)
 
-L_dollars <- ggplot(total_l[which(total_l$totaldol>0)], aes(x = reorder(`NRCS Code and Description`, -totaldol), y = totaldol))+
+L_dollars <- ggplot(total_l[which(total_l$totaldol>0),], aes(x = reorder(`NRCS Code and Description`, -totaldol), y = totaldol))+
   geom_bar(stat = "identity", fill = "#D3DDDC")+
   scale_y_continuous("Costshare Amount",
                      labels = scales::dollar_format(scale = 0.001, suffix = "K"))+
