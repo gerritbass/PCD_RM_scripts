@@ -140,12 +140,13 @@ FINAL = FINAL[!is.na(FINAL$`NRCS Code and Description`),] # Projects without a c
 
 ##########################################################################
 #Show duplicate projects - incentives
-dup <- FINAL[duplicated(FINAL[, c(10, 28)]),]
-dup2 <- FINAL[duplicated(FINAL[, c(10, 28)],fromLast=TRUE),]
+dup <- FINAL[duplicated(FINAL[, c(2, 28)]),]
+dup2 <- FINAL[duplicated(FINAL[, c(2, 28)],fromLast=TRUE),]
 allDup<- full_join(dup, dup2, by = "UNIQUE_ID")
+allDup = allDup[,c(2:10,19:25,27:35,38:46,55:61,63:71)]
 write.csv(allDup, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/duplicates20220804.csv")
-FINAL <- FINAL[,c(2:37)]
 
+FINAL <- FINAL[,c(2:37)]
 
 write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/FINAL_DB_220804.csv")
 write.csv(FINAL, "P:/Research_and_Monitoring/_04_Project_Data/Miscellaneous_Projects/Historical Database/Reports/Database_app/piechart/FINAL_DB220804.csv")
