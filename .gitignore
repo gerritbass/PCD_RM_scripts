@@ -1,0 +1,10 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+archive/
+.RDataTmp
+data/
+RMD/Reports/
+RMD/Supporting-Docs/
+RMD/~$dividual-Site_Reports.docx
