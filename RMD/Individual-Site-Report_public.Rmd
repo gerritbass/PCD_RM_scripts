@@ -1,0 +1,992 @@
+---
+output:
+  word_document: 
+    reference_docx: margin_styles.docx
+params:
+    STREAM_NAME: 
+      value: "South Fork Palouse River"
+    ALT_NAME:
+      value: "Steptoe Creek"
+    STREAM_ID:
+      value: "STEPTOE0.70"
+---
+```{r site_selection, message=FALSE, warning=FALSE, include=FALSE}
+#### READ INSTRUCTIONS BELOW ####
+
+## Follow instructions below to generate a report for an individual sampling site manually.
+## To create all sites automatically. Remember, use project name for Stream Name, not the actual stream name
+## (e.g. South Fork Palouse River for Steptoe Creeks)
+
+
+# 1) MANUALLY ENTER DESIRED STREAM NAME, ALT_NAME & SITE/STREAM_ID below (e.g. Kamiache Creek, KC02.8)
+## NOTE: SET TO params$STREAM_NAME & params$STREAM_ID respectively for automation
+
+STREAM_NAME = params$STREAM_NAME
+ALT_NAME = params$ALT_NAME
+STREAM_ID = params$STREAM_ID
+
+# 2) NOW CLICK KNIT (ABOVE) & A REPORT WILL BE GENERATED AUTOMATICALLY
+```
+
+```{r data_import, message=FALSE, warning=FALSE, include=FALSE}
+
+library(tidyverse)
+library(lubridate)
+library(knitr)
+library(kableExtra)
+library(pander)
+library(flextable)
+library(plotly)
+library(ggthemes)
+
+CT_MASTER = read.csv("P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/Cow_and_Thorn_Creeks/Cow Creek/Stream_Flow_and_Water_Quality/Master_Data/Water_Quality_Data/PCD_ML_Merge.csv")
+
+KT_MASTER = read.csv("P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/Kamiache_and_Thorn_Creeks/Kamiache_Creek/Stream_Flow_and_Water_Quality/Master_Data/Water_Quality_Data/PCD_ML_Merge.csv")
+
+PR_MASTER = read.csv("P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/Palouse_River_Tribs/Stream_Flow_and_Water_Quality/Master_Data/Water_Quality_Data/PCD_ML_Merge_For_EIM_20220422.csv")
+
+site_grabber = function(site_ID, MASTER){
+
+  SITE = MASTER[MASTER$Station == site_ID,]
+    if(STREAM_NAME == "South Fork Palouse River"){
+      SITE$DT_round = mdy_hm(SITE$DT_round)
+    }
+    else{
+      SITE$DT_round = ymd_hms(SITE$DT_round)
+    }
+  SITE = SITE[order(SITE$DT_round),]
+  return(SITE)
+}
+
+
+
+if(STREAM_NAME == "Cow Creek"){
+  COW0.07 = as.data.frame(site_grabber(STREAM_ID, CT_MASTER))
+  EXT_WEBSITE = "https://wacds.maps.arcgis.com/apps/MapSeries/index.html?appid=404b3d1ffb974b2abf2cf6d38d87cff0"
+}
+if(STREAM_NAME == "Thorn Creek (Uniontown)"){
+  COW0.07 = as.data.frame(site_grabber(STREAM_ID, CT_MASTER))
+  EXT_WEBSITE = "https://wacds.maps.arcgis.com/apps/MapSeries/index.html?appid=404b3d1ffb974b2abf2cf6d38d87cff0"
+  }
+if(STREAM_NAME == "Kamiache Creek"){
+  COW0.07 = as.data.frame(site_grabber(STREAM_ID, KT_MASTER))
+   EXT_WEBSITE = "http://wacds.maps.arcgis.com/apps/MapSeries/index.html?appid=d80e7c6637154804b7800e56d3ce0a61"
+  }
+if(STREAM_NAME == "Thorn Creek (Saint John)"){
+  COW0.07 = as.data.frame(site_grabber(STREAM_ID, KT_MASTER))
+  EXT_WEBSITE = "http://wacds.maps.arcgis.com/apps/MapSeries/index.html?appid=d80e7c6637154804b7800e56d3ce0a61"
+}
+
+if(STREAM_NAME == "North Fork Palouse River"){
+  COW0.07 = as.data.frame(site_grabber(STREAM_ID, PR_MASTER))
+  EXT_WEBSITE = "palousecd.org"
+}
+
+if(STREAM_NAME == "South Fork Palouse River"){
+  COW0.07 = as.data.frame(site_grabber(STREAM_ID, PR_MASTER))
+  EXT_WEBSITE = "palousecd.org"
+}
+
+#COW0.07_FIXED = COW0.07[!is.na(COW0.07$pH),]
+COW0.07_FIXED = COW0.07
+COW0.07_FIXED$Flow..cfs. = round(COW0.07_FIXED$Flow..cfs., 3)
+COW0.07_FIXED$Temperature..Sensor.Water...C. = ((COW0.07_FIXED$Temperature..Sensor.Water...C.*(9/5))+32)
+
+if(STREAM_NAME == "Cow Creek" | STREAM_NAME == "Thorn Creek (Uniontown)"){
+
+FIRST_SAMPLE = format(COW0.07_FIXED[1, 2], format = "%m/%d/%Y")
+
+LAST_SAMPLE = format(COW0.07_FIXED[nrow(COW0.07_FIXED), 2], format = "%m/%d/%Y")
+}
+
+if(STREAM_NAME == "Kamiache Creek" | STREAM_NAME == "Thorn Creek (Saint John)"){
+
+FIRST_SAMPLE = format(COW0.07_FIXED[1, 3], format = "%m/%d/%Y")
+
+LAST_SAMPLE = format(COW0.07_FIXED[nrow(COW0.07_FIXED), 3], format = "%m/%d/%Y")
+}
+
+if(STREAM_NAME == "North Fork Palouse River" | STREAM_NAME == "South Fork Palouse River"){
+
+FIRST_SAMPLE = format(COW0.07_FIXED[1, 3], format = "%m/%d/%Y")
+
+LAST_SAMPLE = format(COW0.07_FIXED[nrow(COW0.07_FIXED), 3], format = "%m/%d/%Y")
+COW0.07_FIXED = COW0.07_FIXED[,c(2:22)]
+}
+
+
+```
+<center>
+![](P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/PCD.png){#id .class width=75 height=90px}
+</center>
+
+<center>
+# `r ALT_NAME` Water Quality Report - `r LAST_SAMPLE`
+</center>
+
+This report was created by the Palouse Conservation District (PCD) and contains data from water quality samples collected monthly in `r ALT_NAME` (`r STREAM_ID`) from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. The graphs below provide a visual of  the measured water quality parameters over the sampling period. For more information, please contact Ryan Boylan at RyanB@PalouseCD.org, or Gerrit Bass at GerritB@PalouseCD.org. For more information about the program, visit PCD's Research and Monitoring website, https://www.palousecd.org/research-and-monitoring.
+
+
+
+```{r picture_grabber, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+if(STREAM_ID == "COW0.07"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/COW007.jpg"
+}
+if(STREAM_ID == "COW2.66"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/COW266.jpg"
+}
+if(STREAM_ID == "COW07.4"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/COW074.jpg"
+}
+if(STREAM_ID == "COW07.5"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/COW075.jpg"
+}
+if(STREAM_ID == "COW11.96"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/COW1196.jpg"
+}
+if(STREAM_ID == "COW18.03"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/COW1803.jpg"
+}
+if(STREAM_ID == "TH0.12"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/TH012.jpg"
+}
+if(STREAM_ID == "LTH0.07"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/LTH007.jpg"
+}
+if(STREAM_ID == "TH03.6"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/TH036.jpg"
+}
+if(STREAM_ID == "TH04.55"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/TH455.jpg"
+}
+if(STREAM_ID == "TH07.35"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/TH735.jpg"
+}
+if(STREAM_ID == "KC02.8"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/KC028.jpg"
+}
+if(STREAM_ID == "TC00.6"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/TC006.jpg"
+}
+if(STREAM_ID == "NFPR3"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/NFPR3.jpg"
+}
+if(STREAM_ID == "STEPTOE0.70"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/SC070.jpg"
+}
+if(STREAM_ID == "STEPTOE5.23"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/SC523.jpg"
+}
+if(STREAM_ID == "DC0.51"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/DC051.jpg"
+}
+if(STREAM_ID == "FMC0.28"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/FMC028.jpg"
+}
+if(STREAM_ID == "NFPR12"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/NFPR12_NEW.jpg"
+}
+if(STREAM_ID == "NFPR5A"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/NFPR5A_NEW.jpg"
+}
+if(STREAM_ID == "NFPR6"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/NFPR6_NEW.jpg"
+}
+if(STREAM_ID == "NFPR8"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/NFPR8_NEW.jpg"
+}
+if(STREAM_ID == "NFPR9"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/NFPR9_NEW.jpg"
+}
+if(STREAM_ID == "PAL112.4"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/PAL1124_NEW.jpg"
+}
+if(STREAM_ID == "SFC0.35"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/SFC035_NEW.jpg"
+}
+if(STREAM_ID == "SFPR12.98"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/SFPR1298.jpg"
+}
+if(STREAM_ID == "SFPR47.23"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/SFPR4723.jpg"
+}
+if(STREAM_ID == "SFPR49.44"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/SFPR4944.jpg"
+}
+if(STREAM_ID == "UFC27.31"){
+  pather = "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_2_R_Scripts/WQM_Markdown/Station Maps/UFC2731.jpg"
+}
+knitr::include_graphics(pather)
+
+```
+
+***
+\newpage
+
+# Water Quality Data Summary
+
+The below table provides a summary of the parameters measured at `r STREAM_ID` during the sampling period.
+
+```{r make_da_table, echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE}
+
+RECENT_DATA = COW0.07_FIXED[nrow(COW0.07_FIXED),]
+
+RECENT_DATA = t(RECENT_DATA)
+
+RECENT_DATA = as.data.frame(RECENT_DATA)
+
+if(STREAM_NAME == "Cow Creek" | STREAM_NAME == "Thorn Creek (Uniontown)"){
+
+RECENT_DATA$Parameter= c("Station", 
+                         "Datetime", 
+                         "Nitrogen - Ammonia", 
+                         "Nitrogen - Nitrate/Nitrite",
+                         "Phosphorus (Orthophosphate)", 
+                         "Suspended Sediment Concentration",
+                         "Phosphorus (Total)", 
+                         "QAQC", 
+                         "Notes", 
+                         "Temp0", 
+                         "Water Temperature",
+                         "Barometric Pressure", 
+                         "Dissolved Oxygen Percent", 
+                         "Dissolved Oxygen Concentration",
+                         "Specific Conductivity",
+                         "pH", 
+                         "Turbidity - Water Transparency",
+                         "Fecal Coliform",
+                         "Discharge",
+                         "Flow Notes",
+                         "Turbidity - Water Transparency (Hanna Meter)",
+                         "Stage", 
+                         "DT_ROUND")
+
+SITE_AVG = as.data.frame(NA)
+
+SITE_AVG$Ammonia = mean(COW0.07_FIXED$Ammonia, na.rm = TRUE)
+SITE_AVG$Nitrite = mean(COW0.07_FIXED$Nitrate.Nitrite.as.N, na.rm = TRUE)
+SITE_AVG$TP = mean(COW0.07_FIXED$Total.Phosphorus, na.rm = TRUE)
+SITE_AVG$OP = mean(COW0.07_FIXED$Ortho.Phosphate, na.rm = TRUE)
+SITE_AVG$SSC = mean(COW0.07_FIXED$Suspended.Sediment.Concentration, na.rm = TRUE)
+SITE_AVG$FC = mean(COW0.07_FIXED$Fecal.Coliform..cfu.100ml., na.rm = TRUE)
+SITE_AVG$DO_p = mean(COW0.07_FIXED$Dissolved.Oxygen...., na.rm = TRUE)
+SITE_AVG$DO = mean(COW0.07_FIXED$Dissolved.Oxygen..mg.L., na.rm = TRUE)
+SITE_AVG$TEMP = mean(COW0.07_FIXED$Temperature..Sensor.Water...C., na.rm = TRUE)
+SITE_AVG$BAR = mean(COW0.07_FIXED$Bar.Press..in.hg., na.rm = TRUE)
+SITE_AVG$COND = mean(COW0.07_FIXED$Specific.Conductivity..at.25.deg.C., na.rm = TRUE)
+SITE_AVG$TURB = mean(COW0.07_FIXED$Transparency..water, na.rm = TRUE)
+SITE_AVG$HAN = mean(COW0.07_FIXED$Transparency..W..Hannah.meter..NTU, na.rm = TRUE)
+SITE_AVG$Q = mean(COW0.07_FIXED$Flow..cfs., na.rm = TRUE)
+SITE_AVG$STAGE = mean(COW0.07_FIXED$Stage, na.rm = TRUE)
+SITE_AVG$pH = mean(COW0.07_FIXED$pH, na.rm = TRUE)
+
+RECENT_DATA = RECENT_DATA[c(3:7,11:19, 21, 22),]
+
+RECENT_DATA = as.data.frame(RECENT_DATA)
+colnames(RECENT_DATA) = c(paste("Most Recent Measurement", sep = ' '), "Water Quality Parameter")
+RECENT_DATA$Unit = "mg/L"
+RECENT_DATA$Unit[6] = "Fahrenheit"
+RECENT_DATA$Unit[7] = "mm Hg"
+RECENT_DATA$Unit[8] = "%"
+RECENT_DATA$Unit[9] = "mg/L"
+RECENT_DATA$Unit[10] = "uS/cm"
+RECENT_DATA$Unit[11] = "Units"
+RECENT_DATA$Unit[12] = "NTU"
+RECENT_DATA$Unit[13] = "col/100mL"
+RECENT_DATA$Unit[14] = "CFS"
+RECENT_DATA$Unit[15] = "NTU"
+RECENT_DATA$Unit[16] = "ft"
+
+RECENT_DATA$Site[1] = SITE_AVG$Ammonia
+RECENT_DATA$Site[2] = SITE_AVG$Nitrite
+RECENT_DATA$Site[3] = SITE_AVG$OP
+RECENT_DATA$Site[4] = SITE_AVG$SSC
+RECENT_DATA$Site[5] = SITE_AVG$TP
+RECENT_DATA$Site[6] = SITE_AVG$TEMP
+RECENT_DATA$Site[7] = SITE_AVG$BAR
+RECENT_DATA$Site[8] = SITE_AVG$DO_p
+RECENT_DATA$Site[9] = SITE_AVG$DO
+RECENT_DATA$Site[10] = SITE_AVG$COND
+RECENT_DATA$Site[11] = SITE_AVG$pH
+RECENT_DATA$Site[12] = SITE_AVG$TURB
+RECENT_DATA$Site[13] = SITE_AVG$FC
+RECENT_DATA$Site[14] = SITE_AVG$Q
+RECENT_DATA$Site[15] = SITE_AVG$HAN
+RECENT_DATA$Site[16] = SITE_AVG$STAGE
+
+colnames(RECENT_DATA) = c(paste("Most Recent Measurement", sep = ' '), "Water Quality Parameter", "Unit", "Site Average")
+
+RECENT_DATA = RECENT_DATA[,c(2, 1, 4, 3)]
+RECENT_DATA[,2] = as.numeric(as.character(RECENT_DATA[,2]))
+RECENT_DATA[,2] = round(RECENT_DATA[,2], 2)
+RECENT_DATA[,3] = as.numeric(as.character(RECENT_DATA[,3]))
+RECENT_DATA[,3] = round(RECENT_DATA[,3], 2)
+
+row.names(RECENT_DATA) = NULL
+
+table_RD = flextable(
+  RECENT_DATA
+)
+
+table_RD = autofit(table_RD)
+
+table_RD
+}
+
+if(STREAM_NAME == "North Fork Palouse River"){
+
+RECENT_DATA$Parameter= c("Station", 
+                         "Datetime", 
+                         "Ammonia",
+                         "Nitrogen - Nitrate/Nitrite",
+                         "Phosphorus (Orthophosphate)", 
+                         "Suspended Sediment Concentration",
+                         "Phosphorus (Total)", 
+                         "QAQC", 
+                         "Notes", 
+                         "Temp0", 
+                         "Water Temperature",
+                         "Barometric Pressure", 
+                         "Dissolved Oxygen Percent", 
+                         "Dissolved Oxygen Concentration",
+                         "Specific Conductivity",
+                         "pH", 
+                         "Turbidity - Water Transparency",
+                         "Fecal Coliform",
+                         "Discharge",
+                         "Turbidity - Water Transparency (Hanna Meter)",
+                         "Stage")
+
+SITE_AVG = as.data.frame(NA)
+
+SITE_AVG$Ammonia = mean(COW0.07_FIXED$Ammonia, na.rm = TRUE)
+SITE_AVG$Nitrite = mean(COW0.07_FIXED$Nitrate.Nitrite.as.N, na.rm = TRUE)
+SITE_AVG$TP = mean(COW0.07_FIXED$Total.Phosphorus, na.rm = TRUE)
+SITE_AVG$OP = mean(COW0.07_FIXED$Ortho.Phosphate, na.rm = TRUE)
+SITE_AVG$SSC = mean(COW0.07_FIXED$Suspended.Sediment.Concentration, na.rm = TRUE)
+SITE_AVG$FC = mean(COW0.07_FIXED$Fecal.Coliform..cfu.100ml., na.rm = TRUE)
+SITE_AVG$DO_p = mean(COW0.07_FIXED$Dissolved.Oxygen...., na.rm = TRUE)
+SITE_AVG$DO = mean(COW0.07_FIXED$Dissolved.Oxygen..mg.L., na.rm = TRUE)
+SITE_AVG$TEMP = mean(COW0.07_FIXED$Temperature..Sensor.Water...C., na.rm = TRUE)
+SITE_AVG$BAR = mean(COW0.07_FIXED$Bar.Press..in.hg., na.rm = TRUE)
+SITE_AVG$COND = mean(COW0.07_FIXED$Specific.Conductivity..at.25.deg.C., na.rm = TRUE)
+SITE_AVG$TURB = mean(COW0.07_FIXED$Transparency..water, na.rm = TRUE)
+SITE_AVG$HAN = mean(COW0.07_FIXED$Transparency..W..Hannah.meter..NTU, na.rm = TRUE)
+SITE_AVG$Q = mean(COW0.07_FIXED$Flow..cfs., na.rm = TRUE)
+SITE_AVG$STAGE = mean(COW0.07_FIXED$Stage, na.rm = TRUE)
+SITE_AVG$pH = mean(COW0.07_FIXED$pH, na.rm = TRUE)
+
+RECENT_DATA = RECENT_DATA[c(3:7,11:19, 21, 22),]
+
+RECENT_DATA = as.data.frame(RECENT_DATA)
+colnames(RECENT_DATA) = c(paste("Most Recent Measurement", sep = ' '), "Water Quality Parameter")
+RECENT_DATA$Unit = "mg/L"
+RECENT_DATA$Unit[6] = "Fahrenheit"
+RECENT_DATA$Unit[7] = "mm Hg"
+RECENT_DATA$Unit[8] = "%"
+RECENT_DATA$Unit[9] = "mg/L"
+RECENT_DATA$Unit[10] = "uS/cm"
+RECENT_DATA$Unit[11] = "Units"
+RECENT_DATA$Unit[12] = "NTU"
+RECENT_DATA$Unit[13] = "col/100mL"
+RECENT_DATA$Unit[14] = "CFS"
+RECENT_DATA$Unit[15] = "NTU"
+RECENT_DATA$Unit[16] = "ft"
+
+RECENT_DATA$Site[1] = SITE_AVG$Ammonia
+RECENT_DATA$Site[2] = SITE_AVG$Nitrite
+RECENT_DATA$Site[3] = SITE_AVG$OP
+RECENT_DATA$Site[4] = SITE_AVG$SSC
+RECENT_DATA$Site[5] = SITE_AVG$TP
+RECENT_DATA$Site[6] = SITE_AVG$TEMP
+RECENT_DATA$Site[7] = SITE_AVG$BAR
+RECENT_DATA$Site[8] = SITE_AVG$DO_p
+RECENT_DATA$Site[9] = SITE_AVG$DO
+RECENT_DATA$Site[10] = SITE_AVG$COND
+RECENT_DATA$Site[11] = SITE_AVG$pH
+RECENT_DATA$Site[12] = SITE_AVG$TURB
+RECENT_DATA$Site[13] = SITE_AVG$FC
+RECENT_DATA$Site[14] = SITE_AVG$Q
+RECENT_DATA$Site[15] = SITE_AVG$HAN
+RECENT_DATA$Site[16] = SITE_AVG$STAGE
+
+colnames(RECENT_DATA) = c(paste("Most Recent Measurement", sep = ' '), "Water Quality Parameter", "Unit", "Site Average")
+
+RECENT_DATA = RECENT_DATA[,c(2, 1, 4, 3)]
+RECENT_DATA[,2] = as.numeric(as.character(RECENT_DATA[,2]))
+RECENT_DATA[,2] = round(RECENT_DATA[,2], 2)
+RECENT_DATA[,3] = as.numeric(as.character(RECENT_DATA[,3]))
+RECENT_DATA[,3] = round(RECENT_DATA[,3], 2)
+
+row.names(RECENT_DATA) = NULL
+
+table_RD = flextable(
+  RECENT_DATA
+)
+
+table_RD = autofit(table_RD)
+
+table_RD
+}
+
+
+if(STREAM_NAME == "South Fork Palouse River"){
+
+RECENT_DATA$Parameter= c("Station", 
+                         "Datetime", 
+                         "Suspended Sediment Concentration",
+                         "Ammonia",
+                         "Nitrogen - Nitrate/Nitrite",
+                         "Phosphorus (Orthophosphate)", 
+                         "Phosphorus (Total)", 
+                         "QAQC", 
+                         "Notes", 
+                         "Temp0", 
+                         "Water Temperature",
+                         "Barometric Pressure", 
+                         "Dissolved Oxygen Percent", 
+                         "Dissolved Oxygen Concentration",
+                         "Specific Conductivity",
+                         "pH", 
+                         "Turbidity - Water Transparency",
+                         "Fecal Coliform",
+                         "Discharge",
+                         "Turbidity - Water Transparency (Hanna Meter)",
+                         "Stage")
+
+SITE_AVG = as.data.frame(NA)
+
+SITE_AVG$Ammonia = mean(COW0.07_FIXED$Ammonia, na.rm = TRUE)
+SITE_AVG$Nitrite = mean(COW0.07_FIXED$Nitrate.Nitrite.as.N, na.rm = TRUE)
+SITE_AVG$TP = mean(COW0.07_FIXED$Total.Phosphorus, na.rm = TRUE)
+SITE_AVG$OP = mean(COW0.07_FIXED$Ortho.Phosphate, na.rm = TRUE)
+SITE_AVG$SSC = mean(COW0.07_FIXED$Suspended.Sediment.Concentration, na.rm = TRUE)
+SITE_AVG$FC = mean(COW0.07_FIXED$Fecal.Coliform..cfu.100ml., na.rm = TRUE)
+SITE_AVG$DO_p = mean(COW0.07_FIXED$Dissolved.Oxygen...., na.rm = TRUE)
+SITE_AVG$DO = mean(COW0.07_FIXED$Dissolved.Oxygen..mg.L., na.rm = TRUE)
+SITE_AVG$TEMP = mean(COW0.07_FIXED$Temperature..Sensor.Water...C., na.rm = TRUE)
+SITE_AVG$BAR = mean(COW0.07_FIXED$Bar.Press..in.hg., na.rm = TRUE)
+SITE_AVG$COND = mean(COW0.07_FIXED$Specific.Conductivity..at.25.deg.C., na.rm = TRUE)
+SITE_AVG$TURB = mean(COW0.07_FIXED$Transparency..water, na.rm = TRUE)
+SITE_AVG$HAN = mean(COW0.07_FIXED$Transparency..W..Hannah.meter..NTU, na.rm = TRUE)
+SITE_AVG$Q = mean(COW0.07_FIXED$Flow..cfs., na.rm = TRUE)
+SITE_AVG$STAGE = mean(COW0.07_FIXED$Stage, na.rm = TRUE)
+SITE_AVG$pH = mean(COW0.07_FIXED$pH, na.rm = TRUE)
+
+RECENT_DATA = RECENT_DATA[c(3:7,11:19, 21, 22),]
+
+RECENT_DATA = as.data.frame(RECENT_DATA)
+colnames(RECENT_DATA) = c(paste("Most Recent Measurement", sep = ' '), "Water Quality Parameter")
+RECENT_DATA$Unit = "mg/L"
+RECENT_DATA$Unit[6] = "Fahrenheit"
+RECENT_DATA$Unit[7] = "mm Hg"
+RECENT_DATA$Unit[8] = "%"
+RECENT_DATA$Unit[9] = "mg/L"
+RECENT_DATA$Unit[10] = "uS/cm"
+RECENT_DATA$Unit[11] = "Units"
+RECENT_DATA$Unit[12] = "NTU"
+RECENT_DATA$Unit[13] = "col/100mL"
+RECENT_DATA$Unit[14] = "CFS"
+RECENT_DATA$Unit[15] = "NTU"
+RECENT_DATA$Unit[16] = "ft"
+
+RECENT_DATA$Site[1] = SITE_AVG$Ammonia
+RECENT_DATA$Site[2] = SITE_AVG$Nitrite
+RECENT_DATA$Site[3] = SITE_AVG$OP
+RECENT_DATA$Site[4] = SITE_AVG$SSC
+RECENT_DATA$Site[5] = SITE_AVG$TP
+RECENT_DATA$Site[6] = SITE_AVG$TEMP
+RECENT_DATA$Site[7] = SITE_AVG$BAR
+RECENT_DATA$Site[8] = SITE_AVG$DO_p
+RECENT_DATA$Site[9] = SITE_AVG$DO
+RECENT_DATA$Site[10] = SITE_AVG$COND
+RECENT_DATA$Site[11] = SITE_AVG$pH
+RECENT_DATA$Site[12] = SITE_AVG$TURB
+RECENT_DATA$Site[13] = SITE_AVG$FC
+RECENT_DATA$Site[14] = SITE_AVG$Q
+RECENT_DATA$Site[15] = SITE_AVG$HAN
+RECENT_DATA$Site[16] = SITE_AVG$STAGE
+
+colnames(RECENT_DATA) = c(paste("Most Recent Measurement", sep = ' '), "Water Quality Parameter", "Unit", "Site Average")
+
+RECENT_DATA = RECENT_DATA[,c(2, 1, 4, 3)]
+RECENT_DATA[,2] = as.numeric(as.character(RECENT_DATA[,2]))
+RECENT_DATA[,2] = round(RECENT_DATA[,2], 2)
+RECENT_DATA[,3] = as.numeric(as.character(RECENT_DATA[,3]))
+RECENT_DATA[,3] = round(RECENT_DATA[,3], 2)
+
+row.names(RECENT_DATA) = NULL
+
+table_RD = flextable(
+  RECENT_DATA
+)
+
+table_RD = autofit(table_RD)
+
+table_RD
+}
+
+
+if(STREAM_NAME == "Kamiache Creek" | STREAM_NAME == "Thorn Creek (Saint John)" ){
+  RECENT_DATA$Parameter= c("X",
+                           "Station", 
+                           "Datetime", 
+                           "DT2",
+                           "Nitrogen - Ammonia",
+                           "Dissolved Organic Carbon",
+                           "FC_NA",
+                           "Nitrogen - Nitrate/Nitrite",
+                           "Phosphorus (Orthophosphate)", 
+                           "Suspended Sediment Concentration",
+                           "Total Organic Carbon",
+                           "TPN",
+                           "Phosphorus (Total)",
+                           "TSS",
+                           "TURB_NA",
+                           "QAQC", 
+                           "Air Temp",
+                           "Notes", 
+                           "Temp0", 
+                           "Water Temperature",
+                           "Barometric Pressure", 
+                           "Dissolved Oxygen Percent", 
+                           "Dissolved Oxygen Concentration",
+                           "Specific Conductivity", 
+                           "pH", 
+                           "Turbidity - Water Transparency", 
+                           "Fecal Coliform", 
+                           "Discharge",
+                           "Flow Notes", 
+                           "Turbidity - Water Transparency (Hanna meter)",
+                           "Stage")
+
+SITE_AVG = as.data.frame(NA)
+
+SITE_AVG$Nitrite = mean(COW0.07_FIXED$Nitrate.Nitrite.as.N, na.rm = TRUE)
+SITE_AVG$TP = mean(COW0.07_FIXED$Total.Phosphorus, na.rm = TRUE)
+SITE_AVG$OP = mean(COW0.07_FIXED$Ortho.Phosphate, na.rm = TRUE)
+SITE_AVG$SSC = mean(COW0.07_FIXED$Suspended.Sediment.Concentration, na.rm = TRUE)
+SITE_AVG$FC = mean(COW0.07_FIXED$Fecal.Coliform..cfu.100ml., na.rm = TRUE)
+SITE_AVG$DO_p = mean(COW0.07_FIXED$Dissolved.Oxygen...., na.rm = TRUE)
+SITE_AVG$DO = mean(COW0.07_FIXED$Dissolved.Oxygen..mg.L., na.rm = TRUE)
+SITE_AVG$TEMP = mean(COW0.07_FIXED$Temperature..Sensor.Water...C., na.rm = TRUE)
+SITE_AVG$BAR = mean(COW0.07_FIXED$Bar.Press..in.hg., na.rm = TRUE)
+SITE_AVG$COND = mean(COW0.07_FIXED$Specific.Conductivity..at.25.deg.C., na.rm = TRUE)
+SITE_AVG$TURB = mean(COW0.07_FIXED$Transparency..water, na.rm = TRUE)
+SITE_AVG$HAN = mean(COW0.07_FIXED$Transparency..W..Hannah.meter..NTU, na.rm = TRUE)
+SITE_AVG$Q = mean(COW0.07_FIXED$Flow..cfs., na.rm = TRUE)
+SITE_AVG$STAGE = mean(as.numeric(as.character(COW0.07_FIXED$Stage)), na.rm = TRUE)
+SITE_AVG$pH = mean(COW0.07_FIXED$pH, na.rm = TRUE)
+
+RECENT_DATA = RECENT_DATA[c(8:10,13,20:26, 28, 30,31),]
+
+RECENT_DATA = as.data.frame(RECENT_DATA)
+colnames(RECENT_DATA) = c(paste("Most Recent Measurement", sep = ' '), "Water Quality Parameter")
+RECENT_DATA$Unit = "mg/L"
+RECENT_DATA$Unit[5] = "Fahrenheit"
+RECENT_DATA$Unit[6] = "mm Hg"
+RECENT_DATA$Unit[7] = "%"
+RECENT_DATA$Unit[8] = "mg/L"
+RECENT_DATA$Unit[9] = "uS/cm"
+RECENT_DATA$Unit[10] = "Units"
+RECENT_DATA$Unit[11] = "NTU"
+RECENT_DATA$Unit[12] = "CFS"
+RECENT_DATA$Unit[13] = "NTU"
+RECENT_DATA$Unit[14] = "ft"
+
+RECENT_DATA$Site[1] = SITE_AVG$Nitrite
+RECENT_DATA$Site[2] = SITE_AVG$OP
+RECENT_DATA$Site[3] = SITE_AVG$SSC
+RECENT_DATA$Site[4] = SITE_AVG$TP
+RECENT_DATA$Site[5] = SITE_AVG$TEMP
+RECENT_DATA$Site[6] = SITE_AVG$BAR
+RECENT_DATA$Site[7] = SITE_AVG$DO_p
+RECENT_DATA$Site[8] = SITE_AVG$DO
+RECENT_DATA$Site[9] = SITE_AVG$COND
+RECENT_DATA$Site[10] = SITE_AVG$pH
+RECENT_DATA$Site[11] = SITE_AVG$TURB
+RECENT_DATA$Site[12] = SITE_AVG$Q
+RECENT_DATA$Site[13] = SITE_AVG$HAN
+RECENT_DATA$Site[14] = SITE_AVG$STAGE
+
+colnames(RECENT_DATA) = c(paste("Most Recent Measurement", sep = ' '), "Water Quality Parameter", "Unit", "Site Average")
+
+RECENT_DATA = RECENT_DATA[,c(2, 1, 4, 3)]
+RECENT_DATA[,2] = as.numeric(as.character(RECENT_DATA[,2]))
+RECENT_DATA[,2] = round(RECENT_DATA[,2], 2)
+RECENT_DATA[,3] = as.numeric(as.character(RECENT_DATA[,3]))
+RECENT_DATA[,3] = round(RECENT_DATA[,3], 2)
+
+row.names(RECENT_DATA) = NULL
+
+COW0.07_FIXED = COW0.07_FIXED[,c(2,3,5,8:10,13,16,18:31,4)]
+
+table_RD <-  flextable(RECENT_DATA) %>% 
+  set_flextable_defaults(na_str = "--") %>% 
+  fit_to_width()
+
+#table_RD = fit_to_width(table_RD)
+
+return(table_RD)
+
+  
+  
+}
+
+
+
+```
+\newpage
+
+# Water Temperature 
+
+The figure below displays the water temperature ($^\circ$F) from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. The red dotted line represents the State of Washington's threshold for water temperature (63.5$^\circ$F)([**WAC 173-201A-200**](https://apps.leg.wa.gov/wac/default.aspx?cite=173-201a-200)). Water Temperature tends to become in issue in the summer when flows are low and air temperatures are high. Temperatures above this threshold have the potential to harm aquatic ecosystems. 
+
+<center>
+```{r water_temp, echo=FALSE, message=FALSE, warning=FALSE}
+
+TEMP = COW0.07_FIXED[,c(2, 11)]
+colnames(TEMP) = c("Datetime", "Temperature")
+
+TEMP_PLOT = ggplot(TEMP, aes(x = as.Date(Datetime), y = Temperature))+
+  geom_point()+
+  geom_line()+
+  theme_excel_new()+
+  ylab("Water Temperature (degF)")+
+  xlab("")+
+  theme(axis.text.x= element_text(angle = 60, hjust = 1))+
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y")+
+  geom_hline(aes(yintercept = 63.5, linetype ="Temperature Max"), color = "red", size = 1)+
+  scale_linetype_manual(name = "Water Quality Criteria", values = 2, guide = guide_legend(override.aes = list(color = "red")))+
+  theme(axis.title = element_text())
+
+TEMP_PLOT
+
+```
+</center>
+*Note: Figures may include gaps in data due to missed measurements
+
+\newpage
+
+# Dissolved Oxygen 
+
+The figure below displays dissolved oxygen (DO), in milligrams per liter (mg/L) from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. The red dotted line represents the lower threshold for DO (9.5 mg/L) established by the State of Washington ([**WAC 173-201A-200**](https://apps.leg.wa.gov/wac/default.aspx?cite=173-201a-200)). DO is the amount of gaseous oxygen dissolved in the water, which benefits aquatic life. DO levels can change seasonally and even throughout the day. Summer months with low stream flows and high temperatures are when DO levels can become a concern.  
+
+```{r DO, echo=FALSE, message=FALSE, warning=FALSE}
+
+TEMP = COW0.07_FIXED[,c(2, 14)]
+colnames(TEMP) = c("Datetime", "DO")
+
+TEMP_PLOT = ggplot(TEMP, aes(x = as.Date(Datetime), y = DO))+
+  geom_point()+
+  geom_line()+
+  ylab("Disolved Oxygen (mg/L)")+
+  xlab("")+
+  theme_excel_new()+
+  theme(axis.text.x=element_text(angle=60, hjust = 1))+
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y")+
+  theme(legend.position = "right")+
+  geom_hline(aes(yintercept = 9.5, linetype ="DO min"), color = "red", size = 1)+
+  scale_linetype_manual(name = "Water Quality Criteria", values = 2, guide = guide_legend(override.aes = list(color = "red")))+
+  theme(axis.title = element_text())
+
+print(TEMP_PLOT)
+
+```
+
+*Note: Figures may include gaps in data due to missed measurements
+
+\newpage
+
+# Specific Conductivity 
+The figure below displays specific conductivity (SC), measured in microsiemens per centimeter (uS/cm), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. This is a measure of how well the water conducts electricity and acts as an indicator for the concentration of dissolved solids in the water. This is one way to try and figure out if there are contaminates in the stream. Pure water would theoretically have an SC of 0 uS/cm but it is usually closer to 1 and even rain water is usually a little higher than that. On the other end of the spectrum, salt water has an SC closer to 50,000 uS/cm. This parameter is not usually regulated, but is a good benchmark for assessing water contamination.  
+
+```{r specific_cond, echo=FALSE, message=FALSE, warning=FALSE}
+
+TEMP = COW0.07_FIXED[,c(2, 15)]
+colnames(TEMP) = c("Datetime", "COND")
+
+TEMP_PLOT = ggplot(TEMP, aes(x = as.Date(Datetime), y = COND))+
+  geom_point()+
+  geom_line()+
+  ylab("Specific Conductivity (uS/cm)")+
+  xlab("")+
+  theme_excel_new()+
+  theme(axis.text.x= element_text(angle = 60, hjust = 1))+
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y")+
+  theme(axis.title = element_text())
+
+print(TEMP_PLOT)
+
+```
+
+*Note: Figures may include gaps in data due to missed measurements
+
+\newpage
+
+# pH 
+The figure below displays pH levels in the stream from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. pH is a measure of acidity or alkalinity. Values range from 0 to 14 and are important indicators of health in aquatic ecosystems. Differing pH levels allow for different amounts of chemical constituents, such as heavy metals and nutrients, to be dissolved in water. The graph includes the minimum and maximum thresholds, 6.5 and 8.5 pH units respectively, for pH according to the Water Quality Standards for Surface Waters of the State of Washington ([**WAC 173-201A-200**](https://apps.leg.wa.gov/wac/default.aspx?cite=173-201a-200)). 
+
+```{r ph, echo=FALSE, message=FALSE, warning=FALSE}
+
+library(plotly)
+library(ggplot2)
+
+TEMP = COW0.07_FIXED[,c(2, 16)]
+colnames(TEMP) = c("Datetime", "pH")
+
+TEMP_PLOT = ggplot(TEMP, aes(x = as.Date(Datetime), y = pH))+
+  geom_point()+
+  geom_line()+
+  ylab("pH")+
+  xlab("")+
+  geom_hline(aes(yintercept = 8.5, linetype ="pH Limits"), color = "red", size = 1)+
+  geom_hline(aes(yintercept = 6.5, linetype ="pH Limits"), color = "red", size = 1)+
+  scale_linetype_manual(name = "Water Quality Criteria", values = 2, guide = guide_legend(override.aes = list(color = "red")))+
+  theme_excel_new()+
+  theme(axis.text.x= element_text(angle = 60, hjust = 1))+
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y")+
+  theme(axis.title = element_text())
+
+TEMP_PLOT
+
+```
+
+*Note: Figures may include gaps in data due to missed measurements
+
+\newpage
+
+# Turbidity 
+The figure below displays a measure of water clarity, measured in nephelometric turbidity units (NTU), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. Turbidity is measured by determining how much light can pass through the water.Water clarity directly affects ecological productivity and habitat quality in aquatic environments. Excessive turbidity can be caused by physical disruption of the stream channel or through sediment inputs as a result of runoff and upland erosion.
+
+```{r turbid, echo=FALSE, message=FALSE, warning=FALSE}
+
+library(plotly)
+library(ggplot2)
+
+TEMP = COW0.07_FIXED[,c(2, 17)]
+colnames(TEMP) = c("Datetime", "TURB")
+
+TEMP_PLOT = ggplot(TEMP, aes(x = as.Date(Datetime), y = TURB))+
+  geom_point()+
+  geom_line()+
+  ylab("Turbitity (NTU)")+
+  xlab("")+
+  theme_excel_new()+
+  theme(axis.text.x= element_text(angle = 60, hjust = 1))+
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y")+
+  theme(axis.title = element_text())
+
+TEMP_PLOT
+
+```
+
+*Note: Figures may include gaps in data due to missed measurements
+
+\newpage
+
+# Discharge (Q)
+The figure below shows the discharge of the stream, measured in cubic feet per second (CFS) from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. Stream discharge is calculated by measuring velocity across the cross-sectional area of a stream channel. Measuring devices include a velocimeter and stadia rod or measuring tape. Discharge allows for the calculation of nutrient and sediment loading for a stream.
+
+```{r Q, echo=FALSE, message=FALSE, warning=FALSE}
+
+TEMP = COW0.07_FIXED[,c(2, 19)]
+colnames(TEMP) = c("Datetime", "Q")
+
+TEMP_PLOT = ggplot(TEMP, aes(x = as.Date(Datetime), y = Q))+
+  geom_point()+
+  geom_line()+
+  ylab("Discharge (CFS)")+
+  xlab("")+
+  theme_excel_new()+
+  theme(axis.text.x= element_text(angle = 60, hjust = 1))+
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y")+
+  theme(axis.title = element_text())
+
+TEMP_PLOT
+
+```
+
+*Note: Figures may include gaps in data due to missed measurements
+
+\newpage
+
+# Fecal Coliform 
+The figure below shows fecal coliform (FC), measured in colonies per 100 milliliters (cols/100mL), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. The graph also included a red dotted line representing the State of Washington's threshold for fecal coliform levels ([**WAC 173-201A-200**](https://apps.leg.wa.gov/wac/default.aspx?cite=173-201a-200)). Fecal coliform is a group of coliform bacteria used to indicate fecal contamination in water bodies. The samples are collected in-stream and analyzed at the Colfax Wastewater Treatment Plant. 
+
+```{r FC, echo=FALSE, message=FALSE, warning=FALSE}
+
+if(STREAM_NAME == "Kamiache Creek" | STREAM_NAME == "Thorn Creek (Saint John)"){
+  
+print("Data unavailable for this site")
+
+} else{
+
+  TEMP = COW0.07_FIXED[,c(2, 18)]
+  colnames(TEMP) = c("Datetime", "FC")
+
+  TEMP_PLOT = ggplot(TEMP, aes(x = as.Date(Datetime), y = FC))+
+  geom_point()+
+  geom_line()+
+  ylab("Fecal Coliform (cos/100mL")+
+  xlab("")+
+  geom_hline(aes(yintercept = 200, linetype ="Fecal Coliform Maximum"), color = "red", size = 1)+
+  scale_linetype_manual(name = "Water Quality Criteria", values = 2, guide = guide_legend(override.aes = list(color = "red")))+
+  theme_excel_new()+
+  theme(axis.text.x= element_text(angle = 60, hjust = 1))+
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y")+
+  theme(axis.title = element_text())
+
+TEMP_PLOT
+}
+
+
+```
+
+*Note: Figures may include gaps in data due to missed samples
+
+\newpage
+
+# Ammonia 
+The figure below displays ammonia concentration, measured in milligrams per liter (mg/L), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. Nitrate, nitrite, and ammonia are three common forms of nitrogen found in streams. Nitrogen is found naturally in the environment and is fairly abundant. However, excess nitrogen, from sewage systems and fertilizer applications, can push aquatic ecosystems out of equilibrium and harm them. Ammonia concentrations are derived from in-stream water samples analyzed at Manchester Environmental Laboratory.
+
+
+```{r NH3, echo=FALSE, message=FALSE, warning=FALSE}
+
+if(STREAM_NAME == "Kamiache Creek" | STREAM_NAME == "Thorn Creek (Saint John)"){
+  
+print("Data unavailable for this site")
+
+} else{
+
+  TEMP = COW0.07_FIXED[,c(2, 3)]
+  colnames(TEMP) = c("Datetime", "Ammonia")
+
+  TEMP_PLOT = ggplot(TEMP, aes(x = as.Date(Datetime), y = Ammonia))+
+  geom_point()+
+  geom_line()+
+  ylab("Ammonia Concentration (mg/L)")+
+  xlab("")+
+  theme_excel_new()+
+  theme(axis.text.x= element_text(angle = 60, hjust = 1))+
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y")+
+  theme(axis.title = element_text())
+
+TEMP_PLOT
+}
+
+
+
+
+```
+
+*Note: Figures may include gaps in data due to missed samples
+
+\newpage
+
+# Nitrate/Nitrite 
+The figure below displays nitrate/nitrite measurements, measured in milligrams per liter (mg/L), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. As stated above, nitrate, nitrite, and ammonia are all sources of nitrogen in rivers. Nitrate & nitrite samples are collected in-stream and analyzed at Manchester Environmental Laboratory. See above for more information on the role of nitrogen in aquatic ecosystems.
+
+```{r N, echo=FALSE, message=FALSE, warning=FALSE}
+
+if(STREAM_NAME == "South Fork Palouse River"){
+ TEMP = COW0.07_FIXED[,c(2, 4)]
+} else{TEMP = COW0.07_FIXED[,c(2, 4)]}
+
+colnames(TEMP) = c("Datetime", "N")
+
+TEMP_PLOT = ggplot(TEMP, aes(x = as.Date(Datetime), y = N))+
+  geom_point()+
+  geom_line()+
+  ylab("Nitrate/ Nitrite Concentration (mg/L)")+
+  xlab("")+
+  theme_excel_new()+
+  theme(axis.text.x= element_text(angle = 60, hjust = 1))+
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y")+
+  theme(axis.title = element_text())
+
+TEMP_PLOT
+
+```
+
+*Note: Figures may include gaps in data due to missed samples
+
+\newpage
+
+# Total Phosphorus
+The figure below displays the total phosphorus concentration, in milligrams per liter (mg/L), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. Also, denoted by a red dotted line, is the threshold concentration for phosphorus recommended by the U.S EPA. Total phosphorus and orthophosphate are two forms of phosphorus measured in streams. Much like nitrogen, while being a vital nutrient for aquatic plant life, when present in excess, phosphorus can be detrimental. Phosphorus is used as a chemical fertilizer in agriculture and can lead to algae blooms that decrease oxygen levels in streams and lakes to dangerous levels and lead to the death of aquatic animals. Total phosphorus samples are collected in-stream and analyzed at Manchester Environmental Laboratory.
+
+```{r TP, echo=FALSE, message=FALSE, warning=FALSE}
+
+TEMP = COW0.07_FIXED[,c(2, 6)]
+colnames(TEMP) = c("Datetime", "TP")
+
+TEMP_PLOT = ggplot(TEMP, aes(x = as.Date(Datetime), y = TP))+
+  geom_point()+
+  geom_line()+
+  ylab("Total Phosporus Concentration (mg/L)")+
+  xlab("")+
+  geom_hline(aes(yintercept = 0.1, linetype ="Total Phosphorus Max."), color = "red", size = 1)+
+  scale_linetype_manual(name = "Water Quality Criteria", values = 2, guide = guide_legend(override.aes = list(color = "red")))+
+  theme_excel_new()+
+  theme(axis.text.x= element_text(angle = 60, hjust = 1))+
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y")+
+  theme(axis.title = element_text())
+
+TEMP_PLOT
+
+```
+
+*Note: Figures may include gaps in data due to missed samples
+
+\newpage
+
+# Orthophosphate
+The figure below displays orthophosphate (OP) concentrations,in milligrams per liter (mg/L), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. In addition to the total phosphorus values displayed above, orthophosphates can provide an estimate of how much phosphorus is plant available, as well as help to identify pollution sources since orthophosphates (OP), are usually derived from fertilizers or other human produced sources. Orthophosphate samples are collected in-stream and analyzed at Manchester Environmental Laboratory. 
+```{r OP, echo=FALSE, message=FALSE, warning=FALSE}
+
+TEMP = COW0.07_FIXED[,c(2, 5)]
+colnames(TEMP) = c("Datetime", "OP")
+
+TEMP_PLOT = ggplot(TEMP, aes(x = as.Date(Datetime), y = OP))+
+  geom_point()+
+  geom_line()+
+  ylab("Orthophosphate Concentration (mg/L)")+
+  xlab("")+
+  theme_excel_new()+
+  theme(axis.text.x= element_text(angle = 60, hjust = 1))+
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y")+
+  theme(axis.title = element_text())
+
+TEMP_PLOT
+
+```
+
+*Note: Figures may include gaps in data due to missed samples
+
+\newpage
+
+# Suspended Sediment Concentration 
+The figure below displays suspended sediment concentration (SSC), measured in milligrams per liter (mg/L), from `r FIRST_SAMPLE` to `r LAST_SAMPLE`. Sediment typically enters streams after a rainfall event through erosion and runoff. Depending on the power of the stream and the amount of sediment, it can either be transported downstream or deposited in the channel. Both of these actions, in excess, can cause problems for aquatic ecosystems and downstream water users since sediment can carry pollutants and have other adverse effects on biota. SSC samples are collected in-stream and analyzed at Manchester Environmental Laboratory.
+
+```{r SSC, echo=FALSE, message=FALSE, warning=FALSE}
+
+TEMP = COW0.07_FIXED[,c(2, 7)]
+colnames(TEMP) = c("Datetime", "SSC")
+
+TEMP_PLOT = ggplot(TEMP, aes(x = as.Date(Datetime), y = SSC))+
+  geom_point()+
+  geom_line()+
+  ylab("Suspended Sediment Concentration (mg/L)")+
+  xlab("")+
+  theme_excel_new()+
+  theme(axis.text.x= element_text(angle = 60, hjust = 1))+
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y")+
+  theme(axis.title = element_text())
+
+TEMP_PLOT
+
+```
+
+*Note: Figures may include gaps in data due to missed samples
