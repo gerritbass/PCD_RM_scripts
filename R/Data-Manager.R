@@ -9,9 +9,9 @@ library(taskscheduleR)
 library(tidyr)
 library(readr)
 
-
+#test
 # Setting Working Directory
-  setwd("P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_3_Incoming_Data")
+  setwd("R:/_04_Project_Data/Water_Quality/_3_Incoming_Data")
 
 # Function to Run Entire Code
   Runall = function(){
@@ -43,8 +43,8 @@ library(readr)
             temp_file = temp_file[!is.na(temp_file$FC),]  
             write.csv(temp_file, paste("_PCD_Archive/Field/Fecal_Coliform/", myname, ".csv",sep=""), row.names = F)
             write.csv(temp_file, paste("_To_WISKI/Field/", myname, ".csv",sep=""), row.names = F)
-            my.file.rename(from = paste("P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_3_Incoming_Data/", list.filenames[i], sep=""),
-                           to = paste("P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_3_Incoming_Data/FILE DROP/File Drop Archive/", myname, ".xlsm", sep=""))
+            my.file.rename(from = paste("R:/_04_Project_Data/Water_Quality/_3_Incoming_Data/", list.filenames[i], sep=""),
+                           to = paste("R:/_04_Project_Data/Water_Quality/_3_Incoming_Data/FILE DROP/File Drop Archive/", myname, ".xlsm", sep=""))
             cat(paste("Successfully Exported & Archived.", "\n"))}
             
         # Calibration Sheet Check
@@ -63,13 +63,13 @@ library(readr)
           # Writing New Calibration Sheet - Compiled  
             write.csv(temp_file, paste("_PCD_Archive/Calibration Data/Archive/", myname, ".csv", sep=""))
             write.csv(final_cal, "_PCD_Archive/Calibration Data/Running_ProDSS_Calibration.csv", row.names = F)
-            my.file.rename(from = paste("P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_3_Incoming_Data/", list.filenames[i], sep=""),
-                           to = paste("P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_3_Incoming_Data/FILE DROP/File Drop Archive/", myname, ".xlsm", sep=""))
+            my.file.rename(from = paste("R:/_04_Project_Data/Water_Quality/_3_Incoming_Data/", list.filenames[i], sep=""),
+                           to = paste("R:/_04_Project_Data/Water_Quality/_3_Incoming_Data/FILE DROP/File Drop Archive/", myname, ".xlsm", sep=""))
             cat(paste("Successfully Exported & Archived.", "\n"))}
             
         # Field Data Check
           else{
-              temp_file = read_excel(list.filenames[i], sheet=5)
+              temp_file = read_excel(list.filenames[i], sheet=6)
               myname = substring(list.filenames[i], 11)
               myname = substr(myname, 1, nchar(myname)-5)
               
@@ -100,14 +100,14 @@ library(readr)
                 cat(paste('    Transfer of Field Data Complete with No Recorded Errors', '\n'))
                   }}
             # Appending new data to Field-Running file
-              field_temp = read.csv("P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_3_Incoming_Data/_PCD_Archive/Field/Field-Running.csv")
+              field_temp = read.csv("R:/_04_Project_Data/Water_Quality/_3_Incoming_Data/_PCD_Archive/Field/Field-Running.csv")
               field_temp = field_temp[rowSums(is.na(field_temp)) != ncol(field_temp),] # Removing empty rows
               colnames(field_temp)[1] = "Site ID"
               field_final = rbind(field_temp, temp_file) # Appending temp_file (field sheet) to running field sheet
-              write.csv(field_final, "P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_3_Incoming_Data/_PCD_Archive/Field/Field-Running.csv", row.names=F) # Writing field sheet
+              write.csv(field_final, "R:/_04_Project_Data/Water_Quality/_3_Incoming_Data/_PCD_Archive/Field/Field-Running.csv", row.names=F) # Writing field sheet
             # Moves file from FILE DROP to the archive
-              my.file.rename(from = paste("P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_3_Incoming_Data/", list.filenames[i], sep=""),
-                         to = paste("P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_3_Incoming_Data/FILE DROP/File Drop Archive/", myname, ".xlsm", sep=""))
+              my.file.rename(from = paste("R:/_04_Project_Data/Water_Quality/_3_Incoming_Data/", list.filenames[i], sep=""),
+                         to = paste("R:/_04_Project_Data/Water_Quality/_3_Incoming_Data/FILE DROP/File Drop Archive/", myname, ".xlsm", sep=""))
           }
         }
         
@@ -616,8 +616,8 @@ library(readr)
             }
             myname = substring(list.filenames[i], 11)
             myname = substr(myname, 1, nchar(myname)-4)
-            my.file.rename(from = paste("P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_3_Incoming_Data/", list.filenames[i], sep=""),
-                           to = paste("P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_3_Incoming_Data/FILE DROP/File Drop Archive/", myname, ".csv", sep=""))
+            my.file.rename(from = paste("R:/_04_Project_Data/Water_Quality/_3_Incoming_Data/", list.filenames[i], sep=""),
+                           to = paste("R:/_04_Project_Data/Water_Quality/_3_Incoming_Data/FILE DROP/File Drop Archive/", myname, ".csv", sep=""))
           }
           cat(paste('  Transfer of HydroSphere/HOBO/MEL Data Complete with No Recorded Errors', '\n'))
         }
@@ -636,7 +636,7 @@ library(readr)
               
           }  
         }
-        if(type == "new"){
+        if(type == "NEW"){
           cat(paste("Running .NEW files - Kamiache & Thorn Stations", "\n"))
           for(i in 1:d2f){
             cat("  Processing file ", as.numeric(i), " of ", as.numeric(d2f), "\n", sep='')
@@ -654,8 +654,8 @@ library(readr)
               start_date = strtrim(start_date, 10)
               end_date = mdy_hms(temp_file$Datetime[nrow(temp_file)])
               end_date = strtrim(end_date, 10)
-              my.file.rename(from = paste("P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_3_Incoming_Data/", list.filenames[i], sep=""),
-                             to = paste("P:/Research_and_Monitoring/_04_Project_Data/Water_Quality/_3_Incoming_Data/FILE DROP/File Drop Archive/", list.filenames[i], ".new", sep=""))
+              my.file.rename(from = paste("R:/_04_Project_Data/Water_Quality/_3_Incoming_Data/", list.filenames[i], sep=""),
+                             to = paste("R:/_04_Project_Data/Water_Quality/_3_Incoming_Data/FILE DROP/File Drop Archive/", list.filenames[i], ".new", sep=""))
               myname = paste("_To_WISKI/Continuous Station/TC0.06_", start_date, "_to_", end_date, ".csv", sep="")
               write.csv(temp_file, myname, row.names = F)
               cat(paste("successfully exported & archived", "\n"))
@@ -682,9 +682,9 @@ library(readr)
     if(d2f>0){data_checker(list.filenames, d2f, "tsv")}
   # Continuous Station Files 
     input_dir = "FILE DROP"
-    list.filenames<-list.files(input_dir, ".new", full.names = TRUE)
+    list.filenames<-list.files(input_dir, ".NEW", full.names = TRUE)
     d2f = as.numeric(length(list.filenames))
-    if(d2f>0){data_checker(list.filenames, d2f, "new")}
+    if(d2f>0){data_checker(list.filenames, d2f, "NEW")}
   }
 
 # Run me
