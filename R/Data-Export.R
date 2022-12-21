@@ -1,3 +1,0 @@
-#libraries
-library(kiwisR)
-# testing
