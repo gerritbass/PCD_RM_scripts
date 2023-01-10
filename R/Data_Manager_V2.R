@@ -113,7 +113,8 @@ hobo_cleaner <-  function(file){
     mutate("Site_ID" = site_name) %>% #creates Site ID column and uses the extracted site name to fill it
     rename(Datetime = 2) %>% 
     select(Site_ID, Datetime , 5,6 ) %>% 
-    rename( Site = 1, WT = 3, S = 4) # renames columns based on index
+    rename( Site = 1, WT = 3, S = 4) %>%  # renames columns based on index
+    mutate(S = S*3.281)
   
   
   # write csv file to "To_WISKI" field data folder
