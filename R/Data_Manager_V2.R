@@ -114,7 +114,7 @@ hobo_cleaner <-  function(file){
     rename(Datetime = 2) %>% 
     select(Site_ID, Datetime , 5,6 ) %>% 
     rename( Site = 1, WT = 3, S = 4) %>%  # renames columns based on index
-    mutate(S = S*3.281)
+    mutate(S = as.numeric(S)*3.281)
   
   
   # write csv file to "To_WISKI" field data folder
@@ -293,7 +293,7 @@ lapply(hobo_SandWT, hobo_cleaner)
 #HOBO AIR TEMP ONLY (DRY CREEK)
 lapply(hobo_air, hobo_AIR_cleaner)
 
-#HOBO WATER TEMP ONLY (DRY CREEK)
+#HOBO WATER TEMP ONLY (DRY CREEK,Stuart Creek)
 lapply(hobo_water, hobo_WATER_cleaner)
 
 #TABLET
